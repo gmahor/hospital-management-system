@@ -1,0 +1,33 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: gatewayMS
+
+  cloud:
+    gateway:
+
+      routes:
+        - id: UserMS
+          uri: http://localhost:8080
+          predicates:
+            - Path=/user/**
+          filters:
+            - JwtAuthFilter=enabled=true
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+            allowedHeaders: "*"
+            allowCredentials: true
+
+
+jwt:
+  secret: gm8206@1234#gmahor@gourav@2025&@
+  expiration: 3600000
