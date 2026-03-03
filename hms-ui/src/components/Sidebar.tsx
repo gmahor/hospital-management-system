@@ -13,7 +13,7 @@ import boy from "../assets/boy.png";
 const links = [
   {
     name: "Dashboard",
-    url: "/dashboard",
+    url: "/",
     icon: <IconLayoutGrid stroke={1.5} />,
   },
   {
@@ -38,7 +38,7 @@ const links = [
   },
 ];
 
-export const Sidebar = () => {
+export const Sidebar = ({ data }: { data: any }) => {
   return (
     <div className="flex">
       <div className="w-64"></div>
@@ -54,9 +54,11 @@ export const Sidebar = () => {
             <div className="p-1 bg-white rounded-full shadow-lg">
               <Avatar variant="filled" src={boy} size="lg" alt="it's me" />
             </div>
-            <span className="font-medium text-light">Marshal</span>
+            <span className="font-medium text-light">
+              { data != null ? data.username: "Guest User"}
+            </span>
             <Text c="dimmed" size="xs" className="text-light">
-              Admin
+              {data !=null ?  data.role : "Visitor"}
             </Text>
           </div>
           <div className="flex flex-col gap-1">

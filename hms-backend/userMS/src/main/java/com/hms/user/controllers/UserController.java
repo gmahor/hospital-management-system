@@ -8,6 +8,7 @@ import com.hms.user.services.IUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.annotation.Validated;
@@ -24,8 +25,13 @@ public class UserController {
 
     @PostMapping("/register")
     ResponseEntity<Object> registerUser(@Valid @RequestBody UserDto userDto) {
-        String message = userService.registerUser(userDto);
-        return ResponseEntity.ok().body(message);
+        try {
+            String message = userService.registerUser(userDto);
+            return ResponseEntity.ok().body(message);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PostMapping("/login")

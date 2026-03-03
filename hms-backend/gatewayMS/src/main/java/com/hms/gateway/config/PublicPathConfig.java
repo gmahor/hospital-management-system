@@ -12,7 +12,9 @@ public class PublicPathConfig {
     public List<String> publicPaths(){
         return List.of(
                 "/user/register",
-                "/user/login"
+                "/user/login",
+                "/profile/patient/addPatient",
+                "/profile/doctor/addDoctor"
         );
     }
 

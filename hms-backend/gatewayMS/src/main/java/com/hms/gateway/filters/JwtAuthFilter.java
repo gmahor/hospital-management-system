@@ -9,6 +9,8 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Component
-public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Config> {
+public class JwtAuthFilter implements GlobalFilter {
 
 
     @Value("${jwt.secret}")
@@ -41,80 +43,63 @@ public class JwtAuthFilter extends AbstractGatewayFilterFactory<JwtAuthFilter.Co
         this.secretKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
 
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        String requestPath = exchange.getRequest().getPath().toString();
 
-    public JwtAuthFilter() {
-        super(Config.class);
+        // Skip public endpoints
+        boolean isPublic = publicPaths.stream().anyMatch(requestPath::startsWith);
+        if (isPublic) {
+            return chain.filter(exchange);
+        }
+
+        try {
+            String token = getToken(exchange);
+            Claims claims = validateToken(token);
+
+            // Mutate request with user info from JWT
+            ServerWebExchange mutatedExchange = exchange.mutate()
+                    .request(exchange.getRequest().mutate()
+                            .header("X-User-Email", claims.get("email").toString())
+                            .header("X-User-Role", claims.get("role").toString())
+                            .build())
+                    .build();
+
+            return chain.filter(mutatedExchange);
+        } catch (RuntimeException ex) {
+            return unauthorizedResponse(exchange, "{\"error\":\"" + ex.getMessage() + "\"}");
+        }
     }
 
-    @Override
-    public GatewayFilter apply(Config config) {
-        return (exchange, chain) -> {
-            String requestPath = exchange.getRequest().getPath().toString();
-            boolean isPublic = publicPaths.stream()
-                    .anyMatch(requestPath::startsWith);
-            if (isPublic) {
-                return chain.filter(exchange);
-            }
-            try {
-                String token = getToken(exchange);
-                Claims claims = validateToken(token);
-                ServerWebExchange mutatedExchange = exchange.mutate()
-                        .request(exchange.getRequest().mutate()
-                                .header("X-User-Email", claims.get("email").toString())
-                                .header("X-User-Role", claims.get("role").toString())
-                                .build())
-                        .build();
+    private static String getToken(ServerWebExchange exchange) {
+        HttpHeaders headers = exchange.getRequest().getHeaders();
+        String authHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Authorization header is invalid or missing");
+        }
+        return authHeader.substring(7);
+    }
 
-                return chain.filter(mutatedExchange);
-
-            } catch (RuntimeException ex) {
-                return unauthorizedResponse(exchange, "{\"error\":\"" + ex.getMessage() + "\"}");
-            }
-        };
+    private Claims validateToken(String token) {
+        try {
+            return Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid token");
+        }
     }
 
     private static Mono<Void> unauthorizedResponse(ServerWebExchange exchange, String message) {
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
-        byte[] bytes = message.getBytes(StandardCharsets.UTF_8);
         response.getHeaders().add(HttpHeaders.CONTENT_TYPE, "application/json");
+        byte[] bytes = message.getBytes(StandardCharsets.UTF_8);
         return response.writeWith(Mono.just(response.bufferFactory().wrap(bytes)));
     }
 
-
-    private static String getToken(ServerWebExchange exchange) {
-        HttpHeaders headers = exchange.getRequest().getHeaders();
-        if (!headers.containsKey(HttpHeaders.AUTHORIZATION)) {
-            throw new RuntimeException("Authorization header missing");
-        }
-        String authHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
-        if (authHeader == null || !authHeader.startsWith("Bearer")) {
-            throw new RuntimeException("Authorization header is invalid");
-        }
-        return authHeader.substring(7);
-    }
-
-
-    public Claims validateToken(String token) {
-        Claims claims = null;
-        try {
-            claims = Jwts.parser()
-                    .verifyWith(secretKey)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-
-        } catch (Exception e) {
-            throw new RuntimeException("Invalid token");
-        }
-        return claims;
-    }
-
-    @Getter
-    @Setter
-    public static class Config {
-        private boolean enabled;
-    }
 
 
 }

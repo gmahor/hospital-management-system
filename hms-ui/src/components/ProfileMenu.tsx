@@ -10,12 +10,12 @@ import {
 
 import boy from "../assets/boy.png";
 
-export const ProfileMenu = () => {
+export const ProfileMenu = ({data}:{data: any}) => {
   return (
     <Menu shadow="md" width={200}>
       <Menu.Target>
         <div className="flex items-center gap-3 cursor-pointer">
-          <span className="font-medium text-sm text-neutral-900">Marshal</span>
+          <span className="font-medium text-sm text-neutral-900">{data.username}</span>
           <Avatar variant="filled" src={boy} size={45} alt="it's me" />
         </div>
       </Menu.Target>
@@ -45,7 +45,7 @@ export const ProfileMenu = () => {
           Transfer my data
         </Menu.Item>
         <Menu.Item color="red" leftSection={<IconTrash size={14} />}>
-          Delete my account
+          Logout
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>

@@ -8,9 +8,12 @@ import com.hms.user.enums.Roles;
 import com.hms.user.exceptions.UserException;
 import com.hms.user.repositories.UserRepository;
 import com.hms.user.security.CustomUserDetails;
+import com.hms.user.services.ApiService;
 import com.hms.user.services.IUserService;
 import com.hms.user.utils.JwtUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements IUserService {
@@ -35,38 +39,44 @@ public class UserServiceImpl implements IUserService {
     private final UserDetailsService userDetailsService;
 
     private final JwtUtil jwtUtil;
+
     private UserDetails userDetails;
 
+    private final ApiService apiService;
+
     @Override
+    @Transactional
     public String registerUser(UserDto userDto) {
-        Optional<User> existingUser = userRepository.findByEmailOrUsername(userDto.getEmail(), userDto.getUsername());
-        if (existingUser.isPresent()) {
-            throw new UserException(userDto.getUsername(), userDto.getEmail());
-        }
-        User user = new User();
-        BeanUtils.copyProperties(userDto, user);
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        switch (userDto.getRole()) {
-            case "ADMIN":
-                user.setRole(Roles.ADMIN);
-                break;
-            case "DOCTOR":
-                user.setRole(Roles.DOCTOR);
-                break;
-            case "PATIENT":
-                user.setRole(Roles.PATIENT);
-                break;
-            default:
-                throw new RuntimeException("Invalid role: " + userDto.getRole());
-        }
-        userRepository.save(user);
-        return "User Register Successfully!!";
+            Optional<User> existingUser = userRepository.findByEmailOrUsername(userDto.getEmail(), userDto.getUsername());
+            if (existingUser.isPresent()) {
+                throw new UserException(userDto.getUsername(), userDto.getEmail());
+            }
+            User user = new User();
+            BeanUtils.copyProperties(userDto, user);
+            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            switch (userDto.getRole()) {
+                case "ADMIN":
+                    user.setRole(Roles.ADMIN);
+                    break;
+                case "DOCTOR":
+                    user.setRole(Roles.DOCTOR);
+                    break;
+                case "PATIENT":
+                    user.setRole(Roles.PATIENT);
+                    break;
+                default:
+                    throw new RuntimeException("Invalid role: " + userDto.getRole());
+            }
+            Long id = apiService.addProfile(userDto);
+            user.setProfileId(id);
+            userRepository.save(user);
+            return "User Register Successfully!!";
     }
 
     @Override
     public LoginRespDto loginUser(LoginReqDto loginReqDto) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginReqDto.getEmail(), loginReqDto.getPassword()));
-        CustomUserDetails customUserDetails = (CustomUserDetails)  userDetailsService.loadUserByUsername(loginReqDto.getEmail());
+        CustomUserDetails customUserDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(loginReqDto.getEmail());
         LoginRespDto loginRespDto = new LoginRespDto();
         BeanUtils.copyProperties(customUserDetails, loginRespDto);
         loginRespDto.setRole(customUserDetails.getRole().toString());

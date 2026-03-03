@@ -2,6 +2,7 @@ package com.hms.user.entities;
 
 import com.hms.user.enums.Roles;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String username;
 
     @Column(unique = true)
@@ -30,5 +32,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Roles role;
+
+    private Long profileId;
 
 }

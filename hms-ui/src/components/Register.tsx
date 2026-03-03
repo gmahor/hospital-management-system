@@ -25,11 +25,12 @@ import {
 
 export const Register = () => {
   const [visible, { toggle }] = useDisclosure(false);
- const navigate =  useNavigate();
+  const navigate = useNavigate();
 
   const handleSubmit = (values: typeof form.values) => {
     const payload: any = {
       username: values.username,
+      name: values.name,
       email: values.email,
       password: values.password,
       role: values.type,
@@ -43,12 +44,12 @@ export const Register = () => {
           2000,
           "top-center",
         );
-        navigate('/login');
+        navigate("/login");
       })
       .catch((errorPayload) => {
         ErrorNotification(
           "Registration Failed!!",
-          errorPayload.errorMessage,
+          errorPayload,
           2000,
           "top-center",
         );
@@ -59,6 +60,7 @@ export const Register = () => {
     initialValues: {
       type: "PATIENT",
       username: "",
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -148,6 +150,19 @@ export const Register = () => {
               }}
             />
 
+            <TextInput
+              label="Name"
+              placeholder="Your name"
+              size="md"
+              radius="md"
+              leftSection={<IconUser size={16} />}
+              {...form.getInputProps("name")}
+              classNames={{
+                input: "placeholder:text-sm",
+              }}
+            />
+          </div>
+          <div>
             <TextInput
               label="Email"
               placeholder="Your email"

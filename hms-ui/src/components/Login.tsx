@@ -1,18 +1,20 @@
 import { Button, PasswordInput, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconAt, IconLock } from "@tabler/icons-react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import bg from "../assets/bg.jpg";
 import { loginUser } from "../service/UserService";
+import { setJwt } from "../slices/JwtSlice";
 import {
   ErrorNotification,
   SuccessNotification,
 } from "../utils/CustomNotification";
+import { setUser } from "../slices/UserSlice";
 
 export const Login = () => {
-
- const navigate =  useNavigate();
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const form = useForm({
     initialValues: {
@@ -39,14 +41,16 @@ export const Login = () => {
     };
 
     loginUser(payload)
-      .then((_data) => {
+      .then((data) => {
         SuccessNotification(
           "Login Success!!",
           "Login Successfully",
           2000,
           "top-center",
         );
-        navigate("/");
+        dispatch(setJwt(data.token));
+        dispatch(setUser());
+       // navigate("/dashboard");
       })
       .catch((error) => {
         ErrorNotification(

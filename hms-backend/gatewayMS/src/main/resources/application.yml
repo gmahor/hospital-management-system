@@ -7,14 +7,27 @@ spring:
 
   cloud:
     gateway:
-
-      routes:
-        - id: UserMS
-          uri: http://localhost:8080
-          predicates:
-            - Path=/user/**
-          filters:
-            - JwtAuthFilter=enabled=true
+#      routes:
+#        - id: UserMS
+#          uri: http://localhost:8080
+#          predicates:
+#            - Path=/user/**
+#          filters:
+#            - JwtAuthFilter=enabled=true
+#
+#        - id: ProfileMS-PATIENT
+#          uri: http://localhost:8081
+#          predicates:
+#            - Path=/profile/patient/**
+#          filters:
+#            - JwtAuthFilter=enabled=true
+#
+#        - id: ProfileMS-DOCTOR
+#          uri: http://localhost:8081
+#          predicates:
+#            - Path=/profile/doctor/**
+#          filters:
+#            - JwtAuthFilter=enabled=true
       globalcors:
         cors-configurations:
           '[/**]':

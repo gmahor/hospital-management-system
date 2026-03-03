@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/hms-backend.iml" filepath="$PROJECT_DIR$/.idea/hms-backend.iml" />
-      <module fileurl="file://$PROJECT_DIR$/userMS/userMS.iml" filepath="$PROJECT_DIR$/userMS/userMS.iml" />
     </modules>
   </component>
 </project>
