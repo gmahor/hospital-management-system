@@ -1,7 +1,5 @@
 package com.hms.gateway.config;
 
-import com.hms.gateway.filters.JwtAuthFilter;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +16,8 @@ public class GatewayRoutesConfig {
                 .route("ProfileMS-PATIENT", r -> r.path("/profile/patient/**")
                         .uri("http://localhost:8081"))
                 .route("ProfileMS-DOCTOR", r -> r.path("/profile/doctor/**")
+                        .uri("http://localhost:8081"))
+                .route("ProfileMS-API", r -> r.path("/api/**")
                         .uri("http://localhost:8081"))
                 .build();
     }

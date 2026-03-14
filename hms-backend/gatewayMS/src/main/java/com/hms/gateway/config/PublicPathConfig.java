@@ -15,6 +15,8 @@ public class PublicPathConfig {
                 "/user/login",
                 "/profile/patient/addPatient",
                 "/profile/doctor/addDoctor"
+//                ,
+//                "/api/bloodGroups"
         );
     }
 

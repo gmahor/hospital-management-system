@@ -32,7 +32,7 @@ public enum BloodGroups {
         throw new IllegalArgumentException("Unknown blood group: " + value);
     }
 
-    public List<String> getValues(){
+    public static List<String> getValues(){
          return Arrays.stream(BloodGroups.values()).map(BloodGroups::getValue).toList();
     }
 

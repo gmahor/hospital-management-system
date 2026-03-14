@@ -11,6 +11,7 @@ import {
   SuccessNotification,
 } from "../utils/CustomNotification";
 import { setUser } from "../slices/UserSlice";
+import { jwtDecode } from "jwt-decode";
 
 export const Login = () => {
   const dispatch = useDispatch();
@@ -50,7 +51,6 @@ export const Login = () => {
         );
         dispatch(setJwt(data.token));
         dispatch(setUser());
-       // navigate("/dashboard");
       })
       .catch((error) => {
         ErrorNotification(
