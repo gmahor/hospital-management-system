@@ -38,6 +38,7 @@ public class JwtUtil {
         claims.put("username", customUserDetails.getUsername());
         claims.put("email", customUserDetails.getEmail());
         claims.put("role", customUserDetails.getRole());
+        claims.put("profileId", customUserDetails.getProfileId());
         return doGenerateToken(claims, customUserDetails.getUsername());
     }
 
@@ -52,6 +53,11 @@ public class JwtUtil {
                     .signWith(secretKey)
                     .compact();
     }
+
+
+
+
+
 
 
 }

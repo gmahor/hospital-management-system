@@ -21,4 +21,6 @@ public class CustomUserDetails implements UserDetails {
     private Roles role;
 
     public Collection<? extends GrantedAuthority> authorities;
+
+    private Long profileId;
 }

@@ -32,4 +32,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Roles role;
 
+    private Long profileId;
+
 }

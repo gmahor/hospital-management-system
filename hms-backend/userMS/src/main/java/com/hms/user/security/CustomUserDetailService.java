@@ -3,7 +3,6 @@ package com.hms.user.security;
 import com.hms.user.entities.User;
 import com.hms.user.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,6 +28,7 @@ public class CustomUserDetailService implements UserDetailsService {
         customUserDetails.setEmail(user.getEmail());
         customUserDetails.setRole(user.getRole());
         customUserDetails.setAuthorities(Collections.singleton(new SimpleGrantedAuthority(user.getRole().toString())));
+        customUserDetails.setProfileId(user.getProfileId());
         return customUserDetails;
     }
 }
