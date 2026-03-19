@@ -4,24 +4,24 @@ import { jwtDecode } from "jwt-decode";
 const userSlice = createSlice({
   name: "user",
   initialState: (() => {
-    const token = localStorage.getItem("token");
-    if (!token) return {};
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) return {};
     try {
-      return jwtDecode(token);
+      return jwtDecode(accessToken);
     } catch (error) {
       return {};
     }
   })(),
   reducers: {
     setUser: (state) => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        state = jwtDecode(token);
+      const accessToken = localStorage.getItem("accessToken");
+      if (accessToken) {
+        state = jwtDecode(accessToken);
         return state;
       }
     },
     removeUser: (state) => {
-      localStorage.removeItem("token");
+      localStorage.removeItem("accessToken");
       state = {};
       return state;
     },

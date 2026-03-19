@@ -3,7 +3,8 @@ import { Notifications } from "@mantine/notifications";
 import { Provider } from "react-redux";
 import "./App.css";
 import AppRoutes from "./routes/AppRoutes";
-import Store from "./Store";
+import Store from "./store";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 const theme = createTheme({
   focusRing: "never",
@@ -46,13 +47,17 @@ const theme = createTheme({
   },
 });
 
+const queryClient = new QueryClient();
+
 function App() {
   return (
     <Provider store={Store}>
-      <MantineProvider theme={theme}>
-        <Notifications />
-        <AppRoutes />
-      </MantineProvider>
+      <QueryClientProvider client={queryClient}>
+        <MantineProvider theme={theme}>
+          <Notifications />
+          <AppRoutes />
+        </MantineProvider>
+      </QueryClientProvider>
     </Provider>
   );
 }

@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import {
   DoctorProfile,
-  ProfileLoaderApis
+  ProfileLoaderApis,
 } from "../components/doctor/DoctorProfile";
 import { Login } from "../components/Login";
 import Appointment from "../components/patient/Appointment";
@@ -15,6 +15,14 @@ import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 
 const router = createBrowserRouter([
+   {
+    path: "/",
+    element: (
+      <PublicRoute>
+        <Login />
+      </PublicRoute>
+    ),
+  },
   {
     path: "/login",
     element: (
@@ -32,7 +40,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/",
+    path: "/admin",
     element: (
       <ProtectedRoute>
         <AdminDashboard />

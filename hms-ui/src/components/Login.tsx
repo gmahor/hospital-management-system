@@ -1,17 +1,16 @@
 import { Button, PasswordInput, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconAt, IconLock } from "@tabler/icons-react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import bg from "../assets/bg.jpg";
 import { loginUser } from "../service/UserService";
-import { setJwt } from "../slices/JwtSlice";
+import { setTokens } from "../slices/JwtSlice";
+import { setUser } from "../slices/UserSlice";
 import {
   ErrorNotification,
   SuccessNotification,
 } from "../utils/CustomNotification";
-import { setUser } from "../slices/UserSlice";
-import { jwtDecode } from "jwt-decode";
 
 export const Login = () => {
   const dispatch = useDispatch();
@@ -40,25 +39,27 @@ export const Login = () => {
       email: values.email,
       password: values.password,
     };
-
     loginUser(payload)
       .then((data) => {
-        SuccessNotification(
-          "Login Success!!",
-          "Login Successfully",
-          2000,
-          "top-center",
-        );
-        dispatch(setJwt(data.token));
-        dispatch(setUser());
+        console.log(data);
+        if (data.statusCode === 200 && data.isSuccess) {
+          SuccessNotification(
+            "Login Success!!",
+            data.message,
+            2000,
+            "top-center",
+          );
+          dispatch(
+            setTokens({
+              accessToken: data.data.access_token,
+              refreshToken: data.data.refresh_token,
+            }),
+          );
+          dispatch(setUser());
+        }
       })
       .catch((error) => {
-        ErrorNotification(
-          "Login Failed!!",
-          error.errorMessage,
-          2000,
-          "top-center",
-        );
+        ErrorNotification("Login Failed!!", error.message, 2000, "top-center");
       });
   };
 

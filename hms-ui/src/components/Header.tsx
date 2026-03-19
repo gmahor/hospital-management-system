@@ -5,16 +5,15 @@ import {
 } from "@tabler/icons-react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { removeJwt } from "../slices/JwtSlice";
+import { removeTokens } from "../slices/JwtSlice";
 import { removeUser } from "../slices/UserSlice";
 import { ProfileMenu } from "./ProfileMenu";
 
-export const Header = ({data}:{data:any}) => {
- 
+export const Header = ({ data }: { data: any }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleLogout = () => {
-    dispatch(removeJwt());
+    dispatch(removeTokens());
     dispatch(removeUser());
     navigate("/login");
   };

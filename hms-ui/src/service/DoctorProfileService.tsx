@@ -2,11 +2,7 @@ import { AxiosInstance } from "../interceptor/AxiosInterceptor";
 
 export const apiSpecializations = async () => {
   try {
-    const resp = await AxiosInstance.get("/api/specializations", {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    });
+    const resp = await AxiosInstance.get("/api/specializations");
     return resp.data;
   } catch (error: any) {
     if (error.response) {
@@ -18,11 +14,7 @@ export const apiSpecializations = async () => {
 
 export const apiDepartments = async () => {
   try {
-    const resp = await AxiosInstance.get("/api/departments", {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    });
+    const resp = await AxiosInstance.get("/api/departments");
     return resp.data;
   } catch (error: any) {
     if (error.response) {

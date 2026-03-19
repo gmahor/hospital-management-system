@@ -17,7 +17,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useLoaderData } from "react-router-dom";
 import boy from "../../assets/boy.png";
-import { apiDepartments, apiSpecializations } from "../../service/DoctorServce";
+import { apiDepartments, apiSpecializations } from "../../service/DoctorProfileService";
 
 export const DoctorProfile = () => {
   const user: any = useSelector((state: any) => state.user);

@@ -12,21 +12,57 @@ import {
   TextInput,
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
+import { useDisclosure } from "@mantine/hooks";
 import { IconCheck, IconEdit, IconFile } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLoaderData } from "react-router-dom";
 import boy from "../../assets/boy.png";
-import { apiBloodGroups } from "../../service/ProfileService";
-import { useDisclosure } from "@mantine/hooks";
+import {
+  apiBloodGroups,
+  getProfile,
+} from "../../service/PatientProfileService";
+import { useQuery } from "react-query";
+
+export interface PatientProfile {
+  id: number;
+  name: string;
+  email: string;
+  dob: string | null;
+  phone: string | null;
+  address: string | null;
+  aadhaarNo: string | null;
+  bloodGroup: string | null;
+}
 
 export const Profile = () => {
   const user: any = useSelector((state: any) => state.user);
   const [isEdit, setIsEdit] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  // const [value, setValue] = useState<string | null>(null);
   const [opened, { open, close }] = useDisclosure(false);
   const bloodGroupsData = useLoaderData();
+
   const handleUpdateProfile = () => {};
+
+  const {
+    data: profileDetails,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["profile", user?.profileId],
+    queryFn: async () => {
+      const resp = await getProfile(user?.profileId);
+      return {
+        ...resp,
+        dob: resp.dob ? new Date(resp.dob) : null,
+      };
+    },
+    enabled: !!user?.profileId,
+  });
+
+  if (isLoading) return <div>Loading profile...</div>;
+  if (error) return <div>Failed to load profile</div>;
 
   return (
     <div className="p-10">
@@ -84,11 +120,15 @@ export const Profile = () => {
                   <DatePickerInput
                     className="my-2 mx-2"
                     placeholder="Enter Dob. . ."
-                    // value={value}
+                    value={profileDetails?.dob}
                     // onChange={setValue}
                   />
                 ) : (
-                  <Table.Td>1996-07-12</Table.Td>
+                  <Table.Td>
+                    {profileDetails?.dob
+                      ? profileDetails.dob.toLocaleDateString() // or use date-fns/moment for custom format
+                      : ""}
+                  </Table.Td>
                 )}
               </Table.Tr>
               <Table.Tr>
@@ -105,7 +145,7 @@ export const Profile = () => {
                     clampBehavior="strict"
                   />
                 ) : (
-                  <Table.Td>+91 8447727798</Table.Td>
+                  <Table.Td>{profileDetails?.phone}</Table.Td>
                 )}
               </Table.Tr>
               <Table.Tr>
@@ -118,7 +158,7 @@ export const Profile = () => {
                     placeholder="Enter Address. . ."
                   />
                 ) : (
-                  <Table.Td>123, Main Street, Mumbai, India</Table.Td>
+                  <Table.Td>{profileDetails?.address}</Table.Td>
                 )}
               </Table.Tr>
               <Table.Tr>
@@ -133,7 +173,7 @@ export const Profile = () => {
                     clampBehavior="strict"
                   />
                 ) : (
-                  <Table.Td>1234-5678-9012</Table.Td>
+                  <Table.Td>{profileDetails?.aadhaarNo}</Table.Td>
                 )}
               </Table.Tr>
               <Table.Tr>
@@ -163,7 +203,7 @@ export const Profile = () => {
                     placeholder="Enter Allergies. . ."
                   />
                 ) : (
-                  <Table.Td>Peanuts</Table.Td>
+                  <Table.Td>{profileDetails?.allergies}</Table.Td>
                 )}
               </Table.Tr>
               <Table.Tr>
@@ -176,7 +216,7 @@ export const Profile = () => {
                     placeholder="Enter Chronic Disease. . ."
                   />
                 ) : (
-                  <Table.Td>Diabetes</Table.Td>
+                  <Table.Td>{profileDetails?.chronicDisease}</Table.Td>
                 )}
               </Table.Tr>
             </Table.Tbody>
@@ -221,3 +261,11 @@ export async function bloodGroups() {
   const bloodGroups = await apiBloodGroups();
   return bloodGroups;
 }
+
+// export async function PateintProfileLoader() {
+//   const [bloodGroups, profileDetail] = await Promise.all([
+//     apiBloodGroups(),
+//     getProfile(),
+//   ]);
+//   return { bloodGroups, profileDetail };
+// }

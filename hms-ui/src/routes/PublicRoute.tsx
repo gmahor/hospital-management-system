@@ -8,9 +8,9 @@ interface PublicRouteProps{
 }
 
 const PublicRoute:React.FC<PublicRouteProps> = ({ children }) => {
-   const token = useSelector((state: any) => state.jwt);
-   if(token){
-    const user: any = jwtDecode(token);
+   const accessToken = useSelector((state: any) => state.jwt.accessToken);
+   if(accessToken){
+    const user: any = jwtDecode(accessToken);
     return <Navigate to={`/${user?.role?.toLowerCase()}/dashboard`} />
    }
    return children
