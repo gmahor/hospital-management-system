@@ -2,6 +2,7 @@ package com.hms.profile.services.impl;
 
 import com.hms.profile.dto.PatientReqDto;
 import com.hms.profile.dto.PatientRespDto;
+import com.hms.profile.dto.UpdatePatentReqDto;
 import com.hms.profile.entities.Patient;
 import com.hms.profile.exceptions.PatientException;
 import com.hms.profile.exceptions.PatientNotFoundException;
@@ -38,4 +39,17 @@ public class PatientServiceImpl implements IPatientService {
         BeanUtils.copyProperties(patient, patientRespDto);
         return patientRespDto;
     }
+
+    @Override
+    public String updatePatient(UpdatePatentReqDto updatePatentDto) {
+        Patient patient = patientRepository.findById(updatePatentDto.getId())
+                .orElseThrow(() ->
+                        new PatientNotFoundException("Patient not found with id: " + updatePatentDto.getId())
+                );
+        BeanUtils.copyProperties(updatePatentDto, patient);
+        patientRepository.save(patient);
+        return "Patient updated successfully";
+    }
+
+
 }

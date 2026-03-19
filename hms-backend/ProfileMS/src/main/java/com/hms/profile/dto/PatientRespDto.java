@@ -25,4 +25,8 @@ public class PatientRespDto {
 
     private BloodGroups bloodGroup;
 
+    private String allergies;
+
+    private String chronicDisease;
+
 }

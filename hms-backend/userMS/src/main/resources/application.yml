@@ -24,4 +24,5 @@ spring:
 
 jwt:
   secret: gm8206@1234#gmahor@gourav@2025&@
-  expiration: 3600000
+  access_token_expiration: 300000
+  refresh_token_expiration: 604800000

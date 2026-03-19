@@ -3,6 +3,7 @@ package com.hms.profile.controllers;
 
 import com.hms.profile.dto.PatientReqDto;
 import com.hms.profile.dto.PatientRespDto;
+import com.hms.profile.dto.UpdatePatentReqDto;
 import com.hms.profile.services.IPatientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,12 @@ public class PatientController {
     public ResponseEntity<Object> getPatient(@PathVariable Long id) {
         PatientRespDto patient = iPatientService.getPatientById(id);
         return new ResponseEntity<>(patient, HttpStatus.OK);
+    }
+
+    @PutMapping("/updatePatient")
+    public ResponseEntity<Object> updatePatient(@Valid @RequestBody UpdatePatentReqDto updatePatentReqDto) {
+        String msg = iPatientService.updatePatient(updatePatentReqDto);
+        return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 
 
