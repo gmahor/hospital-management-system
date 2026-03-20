@@ -14,7 +14,8 @@ import {
 import { DatePickerInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import { IconCheck, IconEdit, IconFile } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { useLoaderData } from "react-router-dom";
 import boy from "../../assets/boy.png";
@@ -22,7 +23,6 @@ import {
   apiBloodGroups,
   getProfile,
 } from "../../service/PatientProfileService";
-import { useQuery } from "react-query";
 
 export interface PatientProfile {
   id: number;

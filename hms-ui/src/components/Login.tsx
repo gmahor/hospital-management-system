@@ -41,7 +41,6 @@ export const Login = () => {
     };
     loginUser(payload)
       .then((data) => {
-        console.log(data);
         if (data.statusCode === 200 && data.isSuccess) {
           SuccessNotification(
             "Login Success!!",

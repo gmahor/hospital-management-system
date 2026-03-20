@@ -49,23 +49,14 @@ const processQueue = (error: any, token: string | null = null) => {
   failedQueue = [];
 };
 
-// Refresh function
 async function refreshAccessToken() {
-  console.log("refresh api calling starting ................... ");
-
   const refreshToken = localStorage.getItem("refreshToken");
-  console.log("refreshToken : ", refreshToken);
-
   if (!refreshToken) return null;
-
   try {
     const res = await RefreshClient.post("/user/refreshToken", null, {
       headers: { Authorization: `Bearer ${refreshToken}` },
     });
-    console.log("res : ", res.data.data);
-
     const newAccessToken = res.data.data;
-    console.log("newAccessToken : ", newAccessToken);
     Store.dispatch(setTokens({ accessToken: newAccessToken, refreshToken }));
     return newAccessToken;
   } catch {
@@ -105,8 +96,6 @@ AxiosInstance.interceptors.response.use(
   (res) => res,
   async (error) => {
     const originalRequest = error.config;
-    console.log("originalRequest : ", originalRequest);
-
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise(function (resolve, reject) {

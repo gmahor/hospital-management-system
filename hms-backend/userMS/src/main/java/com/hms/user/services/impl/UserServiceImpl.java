@@ -1,8 +1,6 @@
 package com.hms.user.services.impl;
 
-import com.hms.user.constants.MessageConstant;
 import com.hms.user.dtos.LoginReqDto;
-import com.hms.user.dtos.LoginRespDto;
 import com.hms.user.dtos.UserDto;
 import com.hms.user.entities.User;
 import com.hms.user.enums.Roles;
@@ -18,13 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -76,12 +74,11 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public Map<String, String> loginUser(LoginReqDto loginReqDto) {
-        Authentication authenticate = authenticationManager.authenticate(
+        authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginReqDto.getEmail(), loginReqDto.getPassword())
         );
         CustomUserDetails customUserDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(loginReqDto.getEmail());
         return jwtUtil.generateAccessAndRefreshToken(customUserDetails);
-
     }
 
     @Override
