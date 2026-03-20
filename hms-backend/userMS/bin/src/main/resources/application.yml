@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: UserMS
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hms
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        use_sql_comments: true
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          time_zone: Asia/Kolkata
+
+jwt:
+  secret: gm8206@1234#gmahor@gourav@2025&@
+  access_token_expiration: 300000
+  refresh_token_expiration: 604800000

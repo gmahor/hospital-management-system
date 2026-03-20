@@ -66,7 +66,7 @@ public class GlobalException {
 
     @ExceptionHandler(DoctorAlreadyFoundException.class)
     public ResponseEntity<ErrorRespDto> handleAlreadyFoundException(DoctorAlreadyFoundException exception,
-                                                                       WebRequest webRequest) {
+                                                                    WebRequest webRequest) {
         ErrorRespDto errorResponseDTO = new ErrorRespDto(
                 webRequest.getDescription(false),
                 HttpStatus.BAD_REQUEST,
@@ -82,7 +82,7 @@ public class GlobalException {
         Map<String, String> errors = new HashMap<>();
         exception.getBindingResult()
                 .getFieldErrors()
-                .forEach((fieldError) ->
+                .forEach(fieldError ->
                         errors.put(
                                 fieldError.getField(),
                                 fieldError.getDefaultMessage()

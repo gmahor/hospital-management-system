@@ -18,7 +18,7 @@ public class ApiService {
             case "ADMIN" -> null;
             case "DOCTOR" -> webClient.build()
                     .post()
-                    .uri("http://localhost:9000/profile/doctor/addDoctor")
+                    .uri("http://localhost:9000/profile/doctor/internal/addDoctor")
                     .bodyValue(userDto)
                     .retrieve()
                     .onStatus(HttpStatusCode::isError, clientResponse ->
@@ -29,7 +29,7 @@ public class ApiService {
                     .block();
             case "PATIENT" -> webClient.build()
                     .post()
-                    .uri("http://localhost:9000/profile/patient/addPatient")
+                    .uri("http://localhost:9000/profile/patient/internal/addPatient")
                     .bodyValue(userDto)
                     .retrieve()
                     .onStatus(HttpStatusCode::isError, clientResponse ->

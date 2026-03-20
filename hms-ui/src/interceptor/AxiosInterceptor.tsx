@@ -12,7 +12,7 @@
 //   return config;
 // });
 import axios from "axios";
-import Store from "../store";
+import Store from "../Store";
 import { removeTokens, setTokens } from "../slices/JwtSlice";
 
 export const AxiosInstance = axios.create({

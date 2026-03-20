@@ -13,8 +13,8 @@ public class PublicPathConfig {
         return List.of(
                 "/user/register",
                 "/user/login",
-                "/profile/patient/addPatient",
-                "/profile/doctor/addDoctor"
+                "/profile/patient/internal/addPatient",
+                "/profile/doctor/internal/addDoctor"
 //                ,
 //                "/api/bloodGroups"
         );
