@@ -97,22 +97,6 @@ public class JwtUtil {
         return (userDetails != null && !isTokenExpired(token));
     }
 
-    public boolean isTokenAboutToExpire(String token) {
-        try {
-            Date expiration = Jwts.parser()
-                    .verifyWith(secretKey)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload()
-                    .getExpiration();
-            long now = System.currentTimeMillis();
-            long twoMinute = 2 * 60 * 1000;
-            return expiration.getTime() - now <= twoMinute;
-        } catch (JwtException e) {
-            throw new RuntimeException("Invalid JWT token", e);
-        }
-    }
-
     public boolean isTokenExpired(String token) {
         try {
             Claims claims = getClaims(token);
