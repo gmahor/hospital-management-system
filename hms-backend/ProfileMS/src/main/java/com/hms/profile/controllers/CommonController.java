@@ -3,6 +3,7 @@ package com.hms.profile.controllers;
 import com.hms.profile.enums.BloodGroups;
 import com.hms.profile.enums.Departments;
 import com.hms.profile.enums.Specializations;
+import com.hms.profile.utils.ResponseHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,23 +18,24 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommonController {
 
+    private final ResponseHandler responseHandler;
 
     @GetMapping("/bloodGroups")
     public ResponseEntity<Object> bloodGroups() {
         List<String> bloodGroups = BloodGroups.getValues();
-        return ResponseEntity.status(HttpStatus.OK).body(bloodGroups);
+        return responseHandler.response(bloodGroups, "", true, HttpStatus.OK);
     }
 
     @GetMapping("/specializations")
     public ResponseEntity<Object> specializations() {
         List<String> specializations = Specializations.getSpecializations();
-        return ResponseEntity.status(HttpStatus.OK).body(specializations);
+        return responseHandler.response(specializations, "", true, HttpStatus.OK);
     }
 
     @GetMapping("/departments")
     public ResponseEntity<Object> departments() {
         List<String> departments = Departments.getDepartments();
-        return ResponseEntity.status(HttpStatus.OK).body(departments);
+        return responseHandler.response(departments, "", true, HttpStatus.OK);
     }
 
 
