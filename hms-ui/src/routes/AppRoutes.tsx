@@ -5,7 +5,7 @@ import {
 } from "../components/doctor/DoctorProfile";
 import { Login } from "../components/Login";
 import Appointment from "../components/patient/Appointment";
-import { bloodGroups, Profile } from "../components/patient/Profile";
+import { Profile } from "../components/patient/Profile";
 import Random from "../components/Random";
 import { Register } from "../components/Register";
 import { AdminDashboard } from "../layout/AdminDashboard";
@@ -13,6 +13,7 @@ import { DoctorDashboard } from "../layout/DoctorDashboard";
 import { PatientDashboard } from "../layout/PatientDashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
+import { bloodGroups } from "../components/patient/ProfileTable";
 
 const router = createBrowserRouter([
    {

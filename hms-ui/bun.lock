@@ -15,6 +15,8 @@
         "@reduxjs/toolkit": "^2.11.2",
         "@tabler/icons-react": "^3.36.1",
         "@tailwindcss/vite": "^4.1.18",
+        "aadhaar-validator": "^1.1.0",
+        "aadhaar-validator-ts": "^1.0.3",
         "axios": "^1.13.5",
         "dayjs": "^1.11.19",
         "jwt-decode": "^4.0.0",
@@ -353,6 +355,10 @@
     "@typescript-eslint/visitor-keys": ["@typescript-eslint/visitor-keys@8.54.0", "", { "dependencies": { "@typescript-eslint/types": "8.54.0", "eslint-visitor-keys": "^4.2.1" } }, "sha512-VFlhGSl4opC0bprJiItPQ1RfUhGDIBokcPwaFH4yiBCaNPeld/9VeXbiPO1cLyorQi1G1vL+ecBk1x8o1axORA=="],
 
     "@vitejs/plugin-react": ["@vitejs/plugin-react@5.1.2", "", { "dependencies": { "@babel/core": "^7.28.5", "@babel/plugin-transform-react-jsx-self": "^7.27.1", "@babel/plugin-transform-react-jsx-source": "^7.27.1", "@rolldown/pluginutils": "1.0.0-beta.53", "@types/babel__core": "^7.20.5", "react-refresh": "^0.18.0" }, "peerDependencies": { "vite": "^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0" } }, "sha512-EcA07pHJouywpzsoTUqNh5NwGayl2PPVEJKUSinGGSxFGYn+shYbqMGBg6FXDqgXum9Ou/ecb+411ssw8HImJQ=="],
+
+    "aadhaar-validator": ["aadhaar-validator@1.1.0", "", {}, "sha512-ku6YnUFcBtV1UQ1o2QXLQvMVQirh0cOFbXEQ4Qd6rwo93Sihpm6tvopZzE58v72z9kdt3Ci2sanDpl1+dvdbFw=="],
+
+    "aadhaar-validator-ts": ["aadhaar-validator-ts@1.0.3", "", {}, "sha512-sK+SHcD507kAXHf/tGGm6/vG+4YZG9XBbSZQ8+QqwgzaPe4YNLisUSLnU1KFTjNntyuqJT+9dnYiqNSxm8KY+Q=="],
 
     "acorn": ["acorn@8.15.0", "", { "bin": "bin/acorn" }, "sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg=="],
 

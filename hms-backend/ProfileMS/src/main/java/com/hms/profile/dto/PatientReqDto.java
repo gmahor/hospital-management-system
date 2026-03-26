@@ -1,9 +1,5 @@
 package com.hms.profile.dto;
 
-import com.hms.profile.enums.BloodGroups;
-import com.hms.profile.utils.BloodGroupConverter;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 

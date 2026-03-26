@@ -1,28 +1,21 @@
-import {
-  Avatar,
-  Button,
-  Card,
-  Divider,
-  FileInput,
-  Modal,
-  NumberInput,
-  Select,
-  Table,
-  TagsInput,
-  TextInput,
-} from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
+import { Avatar, Button, Divider, FileInput, Modal } from "@mantine/core";
+import { hasLength, useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { IconCheck, IconEdit, IconFile } from "@tabler/icons-react";
-import { useState } from "react";
+import { IconEdit, IconFile } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { useLoaderData } from "react-router-dom";
 import boy from "../../assets/boy.png";
 import {
-  apiBloodGroups,
+  apiUpdateProfile,
   getProfile,
 } from "../../service/PatientProfileService";
+import {
+  ErrorNotification,
+  SuccessNotification,
+} from "../../utils/CustomNotification";
+import { ProfilePersonalInfo } from "./ProfilePersonalInfo";
 
 export interface PatientProfile {
   id: number;
@@ -33,22 +26,30 @@ export interface PatientProfile {
   address: string | null;
   aadhaarNo: string | null;
   bloodGroup: string | null;
+  allergies: string | null;
+  chronicDisease: string | null;
 }
+
+type FormValues = {
+  dob: Date | null;
+  phone: string;
+  address: string;
+  aadhaarNo: string;
+  bloodGroup: string;
+  allergies: string;
+  chronicDisease: string;
+};
 
 export const Profile = () => {
   const user: any = useSelector((state: any) => state.user);
   const [isEdit, setIsEdit] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
-  // const [value, setValue] = useState<string | null>(null);
   const [opened, { open, close }] = useDisclosure(false);
-  const bloodGroupsData = useLoaderData();
-
-  const handleUpdateProfile = () => {};
 
   const {
     data: profileDetails,
     isLoading,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["profile", user?.profileId],
     queryFn: async () => {
@@ -60,6 +61,83 @@ export const Profile = () => {
     },
     enabled: !!user?.profileId,
   });
+
+  const form = useForm<FormValues>({
+    mode: "uncontrolled",
+    initialValues: {
+      dob: null,
+      phone: "",
+      address: "",
+      aadhaarNo: "",
+      bloodGroup: "",
+      allergies: "",
+      chronicDisease: "",
+    },
+    validate: {
+      dob: (value) => (value ? null : "Please enter your date of birth"),
+      phone: hasLength({ min: 10, max: 10 }, "Phone number must be 10 digits"),
+      aadhaarNo: hasLength(
+        { min: 12, max: 12 },
+        "Aadhar number must be 12 digits",
+      ),
+      bloodGroup: (value) => (value ? null : "Please select a blood group"),
+      allergies: (value) =>
+        value.trim().length > 0 ? null : "Please enter at least one allergy",
+      chronicDisease: (value) =>
+        value.trim().length > 0
+          ? null
+          : "Please enter at least one chronic disease",
+    },
+  });
+
+  useEffect(() => {
+    if (profileDetails) {
+      form.setValues({
+        dob: profileDetails.dob ? new Date(profileDetails.dob) : null,
+        phone: profileDetails.phone || "",
+        address: profileDetails.address || "",
+        aadhaarNo: profileDetails.aadhaarNo || "",
+        bloodGroup: profileDetails.bloodGroup || "",
+        allergies: profileDetails.allergies || "",
+        chronicDisease: profileDetails.chronicDisease || "",
+      });
+    }
+  }, [profileDetails]);
+
+  const handleUpdateProfile = async (values: typeof form.values) => {
+    const payload: any = {
+      id: profileDetails?.id || 0,
+      dob: values.dob,
+      phone: values.phone,
+      address: values.address,
+      aadhaarNo: values.aadhaarNo,
+      bloodGroup: values.bloodGroup,
+      allergies: values.allergies,
+      chronicDisease: values.chronicDisease,
+    };
+
+    apiUpdateProfile(payload)
+      .then((data) => {
+        if (data?.statusCode === 200 && data?.isSuccess) {
+          SuccessNotification(
+            "Update Profile",
+            data?.message,
+            2000,
+            "top-center",
+          );
+        }
+        setIsEdit(false);
+        refetch();
+      })
+      .catch((error) => {
+        ErrorNotification(
+          "Update Profile",
+          error.errorMessage,
+          2000,
+          "top-center",
+        );
+      });
+  };
 
   if (isLoading) return <div>Loading profile...</div>;
   if (error) return <div>Failed to load profile</div>;
@@ -105,137 +183,12 @@ export const Profile = () => {
         )}
       </div>
       <Divider my="xl" />
-      <Card shadow="sm" padding="lg" radius="md" withBorder>
-        <div>
-          <div className="my-4 text-2xl font-medium text-neutral-900 underline">
-            Personal Information
-          </div>
-          <Table variant="vertical" layout="fixed" withTableBorder>
-            <Table.Tbody>
-              <Table.Tr>
-                <Table.Th className="bg-neutral-150! font-semibold! text-xl">
-                  Date of Birth
-                </Table.Th>
-                {isEdit ? (
-                  <DatePickerInput
-                    className="my-2 mx-2"
-                    placeholder="Enter Dob. . ."
-                    value={profileDetails?.dob}
-                    // onChange={setValue}
-                  />
-                ) : (
-                  <Table.Td>
-                    {profileDetails?.dob
-                      ? profileDetails.dob.toLocaleDateString() // or use date-fns/moment for custom format
-                      : ""}
-                  </Table.Td>
-                )}
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Th className="bg-neutral-150! font-semibold! text-xl">
-                  Phone
-                </Table.Th>
-                {isEdit ? (
-                  <NumberInput
-                    placeholder="Enter Phone Number. . ."
-                    className="my-2 mx-2"
-                    min={1}
-                    max={10}
-                    hideControls
-                    clampBehavior="strict"
-                  />
-                ) : (
-                  <Table.Td>{profileDetails?.phone}</Table.Td>
-                )}
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Th className="bg-neutral-150! font-semibold! text-xl">
-                  Address
-                </Table.Th>
-                {isEdit ? (
-                  <TextInput
-                    className="my-2 mx-2"
-                    placeholder="Enter Address. . ."
-                  />
-                ) : (
-                  <Table.Td>{profileDetails?.address}</Table.Td>
-                )}
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Th className="bg-neutral-150! font-semibold! text-xl">
-                  Aadhar No
-                </Table.Th>
-                {isEdit ? (
-                  <NumberInput
-                    className="my-2 mx-2"
-                    placeholder="Enter Aadhar No. . ."
-                    hideControls
-                    clampBehavior="strict"
-                  />
-                ) : (
-                  <Table.Td>{profileDetails?.aadhaarNo}</Table.Td>
-                )}
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Th className="bg-neutral-150! font-semibold! text-xl">
-                  Blood Group
-                </Table.Th>
-                {isEdit ? (
-                  <Select
-                    className="my-2 mx-2"
-                    placeholder="Select Blood Group. . ."
-                    searchable
-                    searchValue={searchValue}
-                    onSearchChange={setSearchValue}
-                    data={bloodGroupsData}
-                  />
-                ) : (
-                  <Table.Td>O+</Table.Td>
-                )}
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Th className="bg-neutral-150! font-semibold! text-xl">
-                  Allergies
-                </Table.Th>
-                {isEdit ? (
-                  <TagsInput
-                    className="my-2 mx-2"
-                    placeholder="Enter Allergies. . ."
-                  />
-                ) : (
-                  <Table.Td>{profileDetails?.allergies}</Table.Td>
-                )}
-              </Table.Tr>
-              <Table.Tr>
-                <Table.Th className="bg-neutral-150! font-semibold! text-xl">
-                  Chronic Disease
-                </Table.Th>
-                {isEdit ? (
-                  <TagsInput
-                    className="my-2 mx-2"
-                    placeholder="Enter Chronic Disease. . ."
-                  />
-                ) : (
-                  <Table.Td>{profileDetails?.chronicDisease}</Table.Td>
-                )}
-              </Table.Tr>
-            </Table.Tbody>
-          </Table>
-          {isEdit && (
-            <div className="flex justify-center my-2">
-              <Button
-                size="xs"
-                variant="filled"
-                color="primary"
-                leftSection={<IconCheck stroke={1.5} />}
-                onClick={handleUpdateProfile}
-              >
-                Submit
-              </Button>
-            </div>
-          )}
-        </div>
-      </Card>
+      <ProfilePersonalInfo
+        isEdit={isEdit}
+        form={form}
+        profileDetails={profileDetails}
+        handleUpdateProfile={handleUpdateProfile}
+      />
       <Modal
         opened={opened}
         onClose={close}
@@ -256,16 +209,3 @@ export const Profile = () => {
     </div>
   );
 };
-
-export async function bloodGroups() {
-  const bloodGroups = await apiBloodGroups();
-  return bloodGroups;
-}
-
-// export async function PateintProfileLoader() {
-//   const [bloodGroups, profileDetail] = await Promise.all([
-//     apiBloodGroups(),
-//     getProfile(),
-//   ]);
-//   return { bloodGroups, profileDetail };
-// }

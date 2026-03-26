@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 public class PatientServiceImpl implements IPatientService {
@@ -47,6 +49,7 @@ public class PatientServiceImpl implements IPatientService {
                         new PatientNotFoundException("Patient not found with id: " + updatePatentDto.getId())
                 );
         BeanUtils.copyProperties(updatePatentDto, patient);
+        patient.setDob(LocalDate.parse(updatePatentDto.getDob()));
         patientRepository.save(patient);
         return "Patient updated successfully";
     }

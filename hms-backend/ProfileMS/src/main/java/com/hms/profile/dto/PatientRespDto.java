@@ -23,7 +23,7 @@ public class PatientRespDto {
 
     private String aadhaarNo;
 
-    private BloodGroups bloodGroup;
+    private String bloodGroup;
 
     private String allergies;
 

@@ -23,15 +23,6 @@ public enum BloodGroups {
         this.value = value;
     }
 
-    public static BloodGroups fromValue(String value) {
-        for (BloodGroups bg : values()) {
-            if (bg.value.equals(value)) {
-                return bg;
-            }
-        }
-        throw new IllegalArgumentException("Unknown blood group: " + value);
-    }
-
     public static List<String> getValues(){
          return Arrays.stream(BloodGroups.values()).map(BloodGroups::getValue).toList();
     }

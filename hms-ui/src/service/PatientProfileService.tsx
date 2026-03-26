@@ -23,3 +23,15 @@ export const getProfile = async (id: any) => {
     throw error;
   }
 };
+
+export const apiUpdateProfile = async (payload: any) => {
+  return await AxiosInstance.put("/profile/patient/updatePatient", payload)
+    .then((resp: any) => resp.data)
+    .catch((error) => {
+      if (error.response) {
+        throw error.response.data;
+      }
+      throw error;
+    });
+};
+

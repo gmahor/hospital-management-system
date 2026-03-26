@@ -1,25 +1,11 @@
-// import axios, { type InternalAxiosRequestConfig } from "axios";
-
-// export const AxiosInstance = axios.create({
-//   baseURL: "http://localhost:9000",
-// });
-
-// AxiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-//   const accessToken = localStorage.getItem("accessToken");
-//   if (accessToken && config.headers) {
-//     config.headers.Authorization = `Bearer ${accessToken}`;
-//   }
-//   return config;
-// });
 import axios from "axios";
-import Store from "../Store";
+import Store from "../store";
 import { removeTokens, setTokens } from "../slices/JwtSlice";
 
 export const AxiosInstance = axios.create({
   baseURL: "http://localhost:9000",
 });
 
-// Separate axios client for refresh (no interceptors)
 const RefreshClient = axios.create({
   baseURL: "http://localhost:9000",
 });
@@ -76,8 +62,6 @@ AxiosInstance.interceptors.request.use(async (config) => {
 
     // Refresh if less than 2 min left
     if (expiry && expiry - now < 120 * 1000 && !isRefreshing) {
-      console.log("token is about to expire in <2 minutes, refreshing...");
-
       isRefreshing = true;
       accessToken = await refreshAccessToken();
       isRefreshing = false;

@@ -1,8 +1,6 @@
 package com.hms.profile.entities;
 
 
-import com.hms.profile.enums.BloodGroups;
-import com.hms.profile.utils.BloodGroupConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,8 +37,7 @@ public class Patient {
     @Column(unique = true)
     private String aadhaarNo;
 
-    @Convert(converter = BloodGroupConverter.class)
-    private BloodGroups bloodGroup;
+    private String bloodGroup;
 
     private String allergies;
 

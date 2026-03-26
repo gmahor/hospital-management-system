@@ -13,7 +13,7 @@ public class UpdatePatentReqDto {
     private Long id;
 
     @NotBlank(message = "Dob Is Required.")
-    private LocalDate dob;
+    private String dob;
 
     @NotBlank(message = "Phone Is Required.")
     private String phone;
