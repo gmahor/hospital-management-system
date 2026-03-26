@@ -2,7 +2,7 @@ import { Button, PasswordInput, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconAt, IconLock } from "@tabler/icons-react";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import bg from "../assets/bg.jpg";
 import { loginUser } from "../service/UserService";
 import { setTokens } from "../slices/JwtSlice";
@@ -14,7 +14,6 @@ import {
 
 export const Login = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const form = useForm({
     initialValues: {

@@ -1,10 +1,10 @@
 import { createTheme, MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { Provider } from "react-redux";
 import "./App.css";
 import AppRoutes from "./routes/AppRoutes";
 import Store from "./store";
-import { QueryClient, QueryClientProvider } from "react-query";
 
 const theme = createTheme({
   focusRing: "never",
