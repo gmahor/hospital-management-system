@@ -1,11 +1,12 @@
 import { Button, PasswordInput, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconAt, IconLock } from "@tabler/icons-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import bg from "../assets/bg.jpg";
 import { loginUser } from "../service/UserService";
 import { setTokens } from "../slices/JwtSlice";
+import { setLoading } from "../slices/LoadingSlice";
 import { setUser } from "../slices/UserSlice";
 import {
   ErrorNotification,
@@ -14,6 +15,7 @@ import {
 
 export const Login = () => {
   const dispatch = useDispatch();
+  const isLoading = useSelector((state: any) => state.loading.isLoading);
 
   const form = useForm({
     initialValues: {
@@ -34,6 +36,7 @@ export const Login = () => {
   });
 
   const handleSubmit = (values: typeof form.values) => {
+    dispatch(setLoading(true));
     const payload: any = {
       email: values.email,
       password: values.password,
@@ -58,6 +61,9 @@ export const Login = () => {
       })
       .catch((error) => {
         ErrorNotification("Login Failed!!", error.message, 2000, "top-center");
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
       });
   };
 
@@ -99,8 +105,9 @@ export const Login = () => {
             type="submit"
             variant="gradient"
             gradient={{ from: "primary", to: "cyan" }}
+            disabled={isLoading}
           >
-            Submit
+             {isLoading ? "Loading..." : "Submit"}
           </Button>
           <div className="text-neutral-700 text-sm self-center">
             Don't have an account?{" "}

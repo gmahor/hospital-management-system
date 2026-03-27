@@ -5,7 +5,6 @@ import { IconEdit, IconFile } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
-import { useLoaderData } from "react-router-dom";
 import boy from "../../assets/boy.png";
 import {
   apiUpdateProfile,
@@ -167,28 +166,31 @@ export const Profile = () => {
             variant="filled"
             color="red"
             leftSection={<IconEdit stroke={1.5} />}
-            onClick={() => (isEdit ? setIsEdit(false) : setIsEdit(true))}
+            onClick={() => setIsEdit(true)}
           >
             Edit
           </Button>
         ) : (
           <Button
-            size="s"
+            size="sm"
             variant="filled"
             color="red"
-            onClick={() => (isEdit ? setIsEdit(false) : setIsEdit(true))}
+            onClick={() => setIsEdit(false)}
           >
             x
           </Button>
         )}
       </div>
+
       <Divider my="xl" />
+
       <ProfilePersonalInfo
         isEdit={isEdit}
         form={form}
         profileDetails={profileDetails}
         handleUpdateProfile={handleUpdateProfile}
       />
+
       <Modal
         opened={opened}
         onClose={close}
@@ -198,7 +200,6 @@ export const Profile = () => {
       >
         <FileInput
           leftSection={<IconFile size={18} stroke={1.5} />}
-          // label="Attach your CV"
           placeholder="Select file"
           leftSectionPointerEvents="none"
         />

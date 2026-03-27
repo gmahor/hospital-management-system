@@ -1,10 +1,10 @@
 import { createTheme, MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { Provider } from "react-redux";
+import { useSelector } from "react-redux";
 import "./App.css";
 import AppRoutes from "./routes/AppRoutes";
-import Store from "./store";
+import Loading from "./components/Loading";
 
 const theme = createTheme({
   focusRing: "never",
@@ -50,15 +50,16 @@ const theme = createTheme({
 const queryClient = new QueryClient();
 
 function App() {
+  const isLoading = useSelector((state: any) => state.loading.isLoading);
+
   return (
-    <Provider store={Store}>
-      <QueryClientProvider client={queryClient}>
-        <MantineProvider theme={theme}>
-          <Notifications />
-          <AppRoutes />
-        </MantineProvider>
-      </QueryClientProvider>
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+      <MantineProvider theme={theme}>
+        <Notifications />
+        {isLoading && <Loading />}
+        <AppRoutes />
+      </MantineProvider>
+    </QueryClientProvider>
   );
 }
 
