@@ -1,8 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import {
-  DoctorProfile,
-  ProfileLoaderApis,
-} from "../components/doctor/DoctorProfile";
+import { DoctorProfile } from "../components/doctor/DoctorProfile";
 import { Login } from "../components/Login";
 import Appointment from "../components/patient/Appointment";
 import { Profile } from "../components/patient/Profile";
@@ -14,9 +11,10 @@ import { PatientDashboard } from "../layout/PatientDashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import { bloodGroups } from "../components/patient/ProfileTable";
+import { ProfileLoaderApis } from "../components/doctor/DoctorProfileTable";
 
 const router = createBrowserRouter([
-   {
+  {
     path: "/",
     element: (
       <PublicRoute>

@@ -14,7 +14,7 @@ public class DoctorRespDto {
 
     private String email;
 
-    private LocalDate dob;
+    private String dob;
 
     private String phone;
 

@@ -2,6 +2,8 @@ package com.hms.profile.controllers;
 
 import com.hms.profile.dto.DoctorReqDto;
 import com.hms.profile.dto.DoctorRespDto;
+import com.hms.profile.dto.UpdateDoctorReqDto;
+import com.hms.profile.dto.UpdatePatentReqDto;
 import com.hms.profile.services.IDoctorService;
 import com.hms.profile.utils.ResponseHandler;
 import jakarta.validation.Valid;
@@ -38,4 +40,11 @@ public class DoctorController {
         DoctorRespDto doctor = iDoctorService.getDoctorById(id);
         return responseHandler.response(doctor, "", true, HttpStatus.OK);
     }
+
+    @PutMapping("/updateDoctorDetails")
+    public ResponseEntity<Object> updateDoctorDetails(@Valid @RequestBody UpdateDoctorReqDto updateDoctorReqDto) {
+        String msg = iDoctorService.updateDoctorDetails(updateDoctorReqDto);
+        return responseHandler.response("", msg, true, HttpStatus.OK);
+    }
+
 }
