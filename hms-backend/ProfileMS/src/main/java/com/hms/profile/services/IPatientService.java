@@ -12,4 +12,6 @@ public interface IPatientService {
 
     String updatePatient(UpdatePatentReqDto updatePatentDto);
 
+    boolean isPatientExist(long  id);
+
 }

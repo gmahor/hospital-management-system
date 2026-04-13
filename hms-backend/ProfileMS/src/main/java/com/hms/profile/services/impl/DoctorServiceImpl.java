@@ -9,7 +9,6 @@ import com.hms.profile.repositories.DoctorRepository;
 import com.hms.profile.services.IDoctorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -63,5 +62,10 @@ public class DoctorServiceImpl implements IDoctorService {
         doctor.setTotalExperience(Integer.parseInt(updateDoctorReqDto.getTotalExperience()));
         doctorRepository.save(doctor);
         return "Doctor updated successfully";
+    }
+
+    @Override
+    public boolean isDoctorExist(long id) {
+        return doctorRepository.existsById(id);
     }
 }

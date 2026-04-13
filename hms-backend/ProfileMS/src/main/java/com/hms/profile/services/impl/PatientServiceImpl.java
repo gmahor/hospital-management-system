@@ -54,5 +54,8 @@ public class PatientServiceImpl implements IPatientService {
         return "Patient updated successfully";
     }
 
-
+    @Override
+    public boolean isPatientExist(long id) {
+       return patientRepository.existsById(id);
+    }
 }

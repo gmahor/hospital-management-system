@@ -12,4 +12,6 @@ public interface IDoctorService {
 
     String updateDoctorDetails(UpdateDoctorReqDto updateDoctorReqDto);
 
+    boolean isDoctorExist(long id);
+
 }

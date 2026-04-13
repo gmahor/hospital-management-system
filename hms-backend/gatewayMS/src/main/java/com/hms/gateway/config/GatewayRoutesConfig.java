@@ -19,6 +19,11 @@ public class GatewayRoutesConfig {
                         .uri("http://localhost:8081"))
                 .route("ProfileMS-API", r -> r.path("/api/**")
                         .uri("http://localhost:8081"))
+                .route("AppointmentMS-API", r -> r.path("/appointment/**")
+                        .uri("http://localhost:8082"))
+                .route("AppointmentMS-GraphQL", r -> r.path("/graphql")
+                        .uri("http://localhost:8082"))
+
                 .build();
     }
 

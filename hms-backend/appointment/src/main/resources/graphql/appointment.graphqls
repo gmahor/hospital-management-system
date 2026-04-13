@@ -1,0 +1,12 @@
+type Appointment {
+    patientId: ID!
+    doctorId: ID!
+    appointmentTime: String
+    status: String
+    reason: String
+    notes: String
+}
+
+type Query {
+    getAppointmentById(id: ID!): Appointment
+}
