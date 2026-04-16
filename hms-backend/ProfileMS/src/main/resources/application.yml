@@ -6,19 +6,32 @@ spring:
     name: ProfileMS
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/hms
-    username: postgres
-    password: root
-    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL:jdbc:mysql://localhost:3306/hms_db}
+    username: ${DB_USERNAME:hms}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
+    show-sql: true
     properties:
       hibernate:
-        show_sql: true
-        use_sql_comments: true
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        jdbc:
-          time_zone: Asia/Kolkata
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  endpoint:
+    health:
+      probes:
+        enabled: true
 

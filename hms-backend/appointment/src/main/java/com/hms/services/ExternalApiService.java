@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hms.dto.DoctorRespDto;
 import com.hms.dto.PatientRespDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,12 +15,18 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ExternalApiService {
 
+    @Value("${profile.service-url}")
+    private String profileServiceUrl;
+
+    @Value("${appointment.service-url}")
+    private String appointmentServiceUrl;
+
     private final WebClient.Builder webClient;
 
     public boolean patientExists(long id, String token) {
         return Boolean.TRUE.equals(webClient.build()
                 .get()
-                .uri("http://localhost:9000/api/isPatientExist/" + id)
+                .uri(profileServiceUrl + "/api/isPatientExist/" + id)   // ✅ use profileServiceUrl
                 .header("AUTHORIZATION", token)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse ->
@@ -32,7 +39,7 @@ public class ExternalApiService {
     public boolean doctorExists(long id, String token) {
         return Boolean.TRUE.equals(webClient.build()
                 .get()
-                .uri("http://localhost:9000/api/isDoctorExist/" + id)
+                .uri(profileServiceUrl + "/api/isDoctorExist/" + id)   // ✅ use profileServiceUrl
                 .header("AUTHORIZATION", token)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse ->
@@ -43,10 +50,9 @@ public class ExternalApiService {
     }
 
     public PatientRespDto patientDetails(long id, String token) throws Exception {
-        PatientRespDto patientRespDto = null;
         String resp = webClient.build()
                 .get()
-                .uri("http://localhost:9000//profile/patient/" + id)
+                .uri(profileServiceUrl + "/profile/patient/" + id)   // ✅ use profileServiceUrl
                 .header("AUTHORIZATION", token)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse ->
@@ -54,22 +60,19 @@ public class ExternalApiService {
                                 .flatMap(errorBody -> Mono.error(new RuntimeException(errorBody)))
                 ).bodyToMono(String.class)
                 .block();
+
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonObject = mapper.readTree(resp);
-        boolean isSuccess = jsonObject.get("isSuccess").asBoolean();
-        int statusCode = jsonObject.get("statusCode").asInt();
-        if (isSuccess && statusCode == 200) {
-            patientRespDto = mapper.treeToValue(jsonObject.get("data"), PatientRespDto.class);
+        if (jsonObject.get("isSuccess").asBoolean() && jsonObject.get("statusCode").asInt() == 200) {
+            return mapper.treeToValue(jsonObject.get("data"), PatientRespDto.class);
         }
-        return patientRespDto;
+        return null;
     }
 
-
     public DoctorRespDto doctorDetails(long id, String token) throws Exception {
-        DoctorRespDto doctorRespDto = null;
         String resp = webClient.build()
                 .get()
-                .uri("http://localhost:9000//profile/doctor/" + id)
+                .uri(profileServiceUrl + "/profile/doctor/" + id)   // ✅ use profileServiceUrl
                 .header("AUTHORIZATION", token)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse ->
@@ -80,11 +83,9 @@ public class ExternalApiService {
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonObject = mapper.readTree(resp);
-        boolean isSuccess = jsonObject.get("isSuccess").asBoolean();
-        int statusCode = jsonObject.get("statusCode").asInt();
-        if (isSuccess && statusCode == 200) {
-            doctorRespDto = mapper.treeToValue(jsonObject.get("data"), DoctorRespDto.class);
+        if (jsonObject.get("isSuccess").asBoolean() && jsonObject.get("statusCode").asInt() == 200) {
+            return mapper.treeToValue(jsonObject.get("data"), DoctorRespDto.class);
         }
-        return doctorRespDto;
+        return null;
     }
 }

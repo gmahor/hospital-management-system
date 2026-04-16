@@ -1,0 +1,96 @@
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-hms
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: hms_db
+      MYSQL_USER: hms
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - hms-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  user-ms:
+    build:
+      context: ./userMS
+    container_name: user-ms
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:mysql://mysql:3306/hms_db
+      DB_USERNAME: hms
+      DB_PASSWORD: root
+      GATEWAY_SERVICE_URL: http://gateway-ms:9000
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "--silent", "http://localhost:8080/actuator/health/readiness" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - hms-network
+
+  profile-ms:
+    build:
+      context: ./profileMS
+    container_name: profile-ms
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+      user-ms:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:mysql://mysql:3306/hms_db
+      DB_USERNAME: hms
+      DB_PASSWORD: root
+    ports:
+      - "8081:8081"
+    networks:
+      - hms-network
+#
+#  appointment-ms:
+#    build:
+#      context: ./appointmentMS
+#    container_name: appointment-ms
+#    restart: always
+#    depends_on:
+#      - mysql
+#    ports:
+#      - "8082:8082"
+#    networks:
+#      - hms-network
+
+  gateway:
+    build:
+      context: ./gatewayMS
+    container_name: gateway-ms
+    restart: always
+    environment:
+      USER_SERVICE_URL: "http://user-ms:8080"
+      PROFILE_SERVICE_URL: "http://profile-ms:8081"
+      APPOINTMENT_SERVICE_URL: "http://appointment-ms:8082"
+    ports:
+      - "9000:9000"
+    networks:
+      - hms-network
+
+volumes:
+  mysql_data:
+
+networks:
+  hms-network:

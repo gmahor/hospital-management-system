@@ -44,3 +44,8 @@ spring:
 jwt:
   secret: gm8206@1234#gmahor@gourav@2025&@
   expiration: 3600000
+
+uri:
+  user-service-url: ${USER_SERVICE_URL:http://localhost:8080}
+  profile-service-url: ${PROFILE_SERVICE_URL:http://localhost:8081}
+  appointment-service-url: ${APPOINTMENT_SERVICE_URL:http://localhost:8082}

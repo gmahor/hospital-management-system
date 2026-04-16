@@ -27,10 +27,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(requests -> {
-                    publicPaths.forEach(path -> requests.requestMatchers(path).permitAll());
-                    requests.anyRequest().authenticated();
-                })
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(publicPaths.toArray(new String[0])).permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
+                        .anyRequest().authenticated()
+                )
                 .addFilterBefore(new GatewayAuthFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

@@ -1,5 +1,6 @@
 package com.hms.gateway.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -8,24 +9,36 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GatewayRoutesConfig {
 
+    @Value("${uri.user-service-url}")
+    private String userServiceUrl;
+
+    @Value("${uri.profile-service-url}")
+    private String profileServiceUrl;
+
+    @Value("${uri.appointment-service-url}")
+    private String appointmentServiceUrl;
+
     @Bean
     public RouteLocator customRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("UserMS", r -> r.path("/user/**")
-                        .uri("http://localhost:8080"))
+                        .uri(userServiceUrl))
+
                 .route("ProfileMS-PATIENT", r -> r.path("/profile/patient/**")
-                        .uri("http://localhost:8081"))
+                        .uri(profileServiceUrl))
+
                 .route("ProfileMS-DOCTOR", r -> r.path("/profile/doctor/**")
-                        .uri("http://localhost:8081"))
+                        .uri(profileServiceUrl))
+
                 .route("ProfileMS-API", r -> r.path("/api/**")
-                        .uri("http://localhost:8081"))
+                        .uri(profileServiceUrl))
+
                 .route("AppointmentMS-API", r -> r.path("/appointment/**")
-                        .uri("http://localhost:8082"))
+                        .uri(appointmentServiceUrl))
+
                 .route("AppointmentMS-GraphQL", r -> r.path("/graphql")
-                        .uri("http://localhost:8082"))
+                        .uri(appointmentServiceUrl))
 
                 .build();
     }
-
-
 }
