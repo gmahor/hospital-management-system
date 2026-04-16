@@ -15,18 +15,15 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ExternalApiService {
 
-    @Value("${profile.service-url}")
-    private String profileServiceUrl;
-
-    @Value("${appointment.service-url}")
-    private String appointmentServiceUrl;
+    @Value("${gateway.service-url}")
+    private String gatewayServiceUrl;
 
     private final WebClient.Builder webClient;
 
     public boolean patientExists(long id, String token) {
         return Boolean.TRUE.equals(webClient.build()
                 .get()
-                .uri(profileServiceUrl + "/api/isPatientExist/" + id)   // ✅ use profileServiceUrl
+                .uri(gatewayServiceUrl + "/api/isPatientExist/" + id)
                 .header("AUTHORIZATION", token)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse ->
@@ -39,7 +36,7 @@ public class ExternalApiService {
     public boolean doctorExists(long id, String token) {
         return Boolean.TRUE.equals(webClient.build()
                 .get()
-                .uri(profileServiceUrl + "/api/isDoctorExist/" + id)   // ✅ use profileServiceUrl
+                .uri(gatewayServiceUrl + "/api/isDoctorExist/" + id)
                 .header("AUTHORIZATION", token)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse ->
@@ -52,7 +49,7 @@ public class ExternalApiService {
     public PatientRespDto patientDetails(long id, String token) throws Exception {
         String resp = webClient.build()
                 .get()
-                .uri(profileServiceUrl + "/profile/patient/" + id)   // ✅ use profileServiceUrl
+                .uri(gatewayServiceUrl + "/profile/patient/" + id)
                 .header("AUTHORIZATION", token)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse ->
@@ -72,7 +69,7 @@ public class ExternalApiService {
     public DoctorRespDto doctorDetails(long id, String token) throws Exception {
         String resp = webClient.build()
                 .get()
-                .uri(profileServiceUrl + "/profile/doctor/" + id)   // ✅ use profileServiceUrl
+                .uri(gatewayServiceUrl + "/profile/doctor/" + id)
                 .header("AUTHORIZATION", token)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse ->

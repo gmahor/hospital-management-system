@@ -60,20 +60,33 @@ services:
       DB_PASSWORD: root
     ports:
       - "8081:8081"
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "--silent", "http://localhost:8081/actuator/health/readiness" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     networks:
       - hms-network
-#
-#  appointment-ms:
-#    build:
-#      context: ./appointmentMS
-#    container_name: appointment-ms
-#    restart: always
-#    depends_on:
-#      - mysql
-#    ports:
-#      - "8082:8082"
-#    networks:
-#      - hms-network
+
+  appointment-ms:
+    build:
+      context: ./appointment
+    container_name: appointment-ms
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+      profile-ms:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:mysql://mysql:3306/hms_db
+      DB_USERNAME: hms
+      DB_PASSWORD: root
+      GATEWAY_SERVICE_URL: http://gateway-ms:9000
+    ports:
+      - "8082:8082"
+    networks:
+      - hms-network
 
   gateway:
     build:

@@ -32,7 +32,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new AppointmentException("Patient not found");
         }
 
-        boolean isDoctorExists = apiService.doctorExists(appointmentReqDto.getPatientId(), token);
+        boolean isDoctorExists = apiService.doctorExists(appointmentReqDto.getDoctorId(), token);
         if (!isDoctorExists) {
             throw new AppointmentException("Doctor not found");
         }

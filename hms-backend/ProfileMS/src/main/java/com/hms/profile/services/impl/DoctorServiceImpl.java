@@ -48,7 +48,7 @@ public class DoctorServiceImpl implements IDoctorService {
                 new RuntimeException("Doctor not found with id: " + id)
         );
         BeanUtils.copyProperties(doctor, doctorRespDto);
-        doctorRespDto.setDob(doctor.getDob().toString());
+        doctorRespDto.setDob(doctor.getDob() != null ? doctor.getDob().toString() : null);
         return doctorRespDto;
     }
 
