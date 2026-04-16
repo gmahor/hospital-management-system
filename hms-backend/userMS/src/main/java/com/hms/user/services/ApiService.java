@@ -18,7 +18,6 @@ public class ApiService {
     private final WebClient.Builder webClient;
 
     public Long addProfile(UserDto userDto) {
-        System.out.println("gatewayServiceUrl : " + gatewayServiceUrl);
         return switch (userDto.getRole()) {
             case "ADMIN" -> null;
             case "DOCTOR" -> webClient.build()

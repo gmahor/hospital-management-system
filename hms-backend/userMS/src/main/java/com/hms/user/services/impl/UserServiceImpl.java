@@ -68,6 +68,7 @@ public class UserServiceImpl implements IUserService {
                 throw new RuntimeException("Invalid role: " + userDto.getRole());
         }
         Long id = apiService.addProfile(userDto);
+        if(id == null) throw new RuntimeException("Something went wrong while calling the profile api.");
         user.setProfileId(id);
         userRepository.save(user);
         return "User Register Successfully!!";

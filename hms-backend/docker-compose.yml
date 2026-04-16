@@ -33,7 +33,7 @@ services:
       DB_URL: jdbc:mysql://mysql:3306/hms_db
       DB_USERNAME: hms
       DB_PASSWORD: root
-      GATEWAY_SERVICE_URL: http://gateway-ms:9001
+      GATEWAY_SERVICE_URL: http://gateway-ms:9000
     ports:
       - "8080:8080"
     healthcheck:
@@ -85,7 +85,7 @@ services:
       PROFILE_SERVICE_URL: "http://profile-ms:8081"
       APPOINTMENT_SERVICE_URL: "http://appointment-ms:8082"
     ports:
-      - "9001:9001"
+      - "9000:9000"
     networks:
       - hms-network
 
