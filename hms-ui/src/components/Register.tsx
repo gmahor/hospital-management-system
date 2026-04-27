@@ -40,7 +40,7 @@ export const Register = () => {
       .then((data) => {
         SuccessNotification(
           "Registeration Success!!",
-          data,
+          data.data,
           2000,
           "top-center",
         );
