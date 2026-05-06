@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: gatewayMS
+    name: GatewayMS
 
   cloud:
     gateway:
@@ -49,3 +49,25 @@ uri:
   user-service-url: ${USER_SERVICE_URL:http://localhost:8080}
   profile-service-url: ${PROFILE_SERVICE_URL:http://localhost:8081}
   appointment-service-url: ${APPOINTMENT_SERVICE_URL:http://localhost:8082}
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.uuid}
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  endpoint:
+    health:
+      probes:
+        enabled: true

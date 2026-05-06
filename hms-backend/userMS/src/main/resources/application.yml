@@ -26,10 +26,13 @@ jwt:
 
 gateway:
   service-url: ${GATEWAY_SERVICE_URL:http://localhost:9000}
-#gateway:
-#  service-url: ${GATEWAY_SERVICE_URL}
 
-
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.uuid}
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
 
 management:
   endpoints:

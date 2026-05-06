@@ -55,17 +55,10 @@ public class UserServiceImpl implements IUserService {
         BeanUtils.copyProperties(userDto, user);
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         switch (userDto.getRole()) {
-            case "ADMIN":
-                user.setRole(Roles.ADMIN);
-                break;
-            case "DOCTOR":
-                user.setRole(Roles.DOCTOR);
-                break;
-            case "PATIENT":
-                user.setRole(Roles.PATIENT);
-                break;
-            default:
-                throw new RuntimeException("Invalid role: " + userDto.getRole());
+            case "ADMIN" -> user.setRole(Roles.ADMIN);
+            case "DOCTOR" -> user.setRole(Roles.DOCTOR);
+            case "PATIENT" -> user.setRole(Roles.PATIENT);
+            default -> throw new RuntimeException("Invalid role: " + userDto.getRole());
         }
         Long id = apiService.addProfile(userDto);
         if(id == null) throw new RuntimeException("Something went wrong while calling the profile api.");
