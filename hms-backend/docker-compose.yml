@@ -23,6 +23,7 @@ services:
   eureka:
     build:
       context: ./eureka
+    image: "gourav60/eureka:v1"
     container_name: eureka
     restart: always
     environment:
@@ -47,6 +48,7 @@ services:
   gateway:
     build:
       context: ./gatewayMS
+    image: "gourav60/gateway:v1"
     container_name: gateway-ms
     restart: always
     depends_on:
@@ -54,9 +56,6 @@ services:
         condition: service_healthy
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
-      USER_SERVICE_URL: "http://user-ms:8080"
-      PROFILE_SERVICE_URL: "http://profile-ms:8081"
-      APPOINTMENT_SERVICE_URL: "http://appointment-ms:8082"
     ports:
       - "9000:9000"
     healthcheck:
@@ -76,6 +75,7 @@ services:
   user-ms:
     build:
       context: ./userMS
+    image: "gourav60/user-ms:v1"
     container_name: user-ms
     restart: always
     depends_on:
@@ -109,6 +109,7 @@ services:
   profile-ms:
     build:
       context: ./profileMS
+    image: "gourav60/profile-ms:v1"
     container_name: profile-ms
     restart: always
     depends_on:
@@ -143,6 +144,7 @@ services:
   appointment-ms:
     build:
       context: ./appointment
+    image: "gourav60/appointment-ms:v1"
     container_name: appointment-ms
     restart: always
     depends_on:

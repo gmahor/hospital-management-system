@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appointment-ms-deployment
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: appointment-ms
+
+  template:
+    metadata:
+      labels:
+        app: appointment-ms
+
+    spec:
+      containers:
+        - name: appointment-ms
+
+          image: gourav60/appointment-ms:v1
+
+          ports:
+            - containerPort: 8082
+
+          env:
+            - name: DB_URL
+              value: jdbc:mysql://mysql-service:3306/hms_db
+
+            - name: DB_USERNAME
+              value: hms
+
+            - name: DB_PASSWORD
+              value: root
+
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: http://eureka-service:8761/eureka/
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: appointment-ms-service
+
+spec:
+  selector:
+    app: appointment-ms
+
+  ports:
+    - port: 8082
+      targetPort: 8082
+
+  type: ClusterIP

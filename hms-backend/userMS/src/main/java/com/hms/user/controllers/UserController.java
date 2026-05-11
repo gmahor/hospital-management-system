@@ -17,7 +17,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -40,8 +39,8 @@ public class UserController {
             return responseHandler.response(message, MessageConstant.USER_REGISTER_SUCCESS, true, HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
+            return responseHandler.response(e.getMessage(), MessageConstant.ERROR_WHILE_REGISTER_USER, false, HttpStatus.BAD_REQUEST);
         }
-        return responseHandler.response("", MessageConstant.ERROR_WHILE_REGISTER_USER, false, HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/login")

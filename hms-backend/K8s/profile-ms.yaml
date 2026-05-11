@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profile-ms-deployment
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: profile-ms
+
+  template:
+    metadata:
+      labels:
+        app: profile-ms
+
+    spec:
+      containers:
+        - name: profile-ms
+
+          image: gourav60/profile-ms:v1
+
+          ports:
+            - containerPort: 8081
+
+          env:
+            - name: DB_URL
+              value: jdbc:mysql://mysql-service:3306/hms_db
+
+            - name: DB_USERNAME
+              value: hms
+
+            - name: DB_PASSWORD
+              value: root
+
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: http://eureka-service:8761/eureka/
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: profile-ms-service
+
+spec:
+  selector:
+    app: profile-ms
+
+  ports:
+    - port: 8081
+      targetPort: 8081
+
+  type: ClusterIP

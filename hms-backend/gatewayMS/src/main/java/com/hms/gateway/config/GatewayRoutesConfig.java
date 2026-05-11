@@ -1,6 +1,5 @@
 package com.hms.gateway.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -9,35 +8,34 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GatewayRoutesConfig {
 
-    @Value("${uri.user-service-url}")
-    private String userServiceUrl;
-
-    @Value("${uri.profile-service-url}")
-    private String profileServiceUrl;
-
-    @Value("${uri.appointment-service-url}")
-    private String appointmentServiceUrl;
 
     @Bean
     public RouteLocator customRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("UserMS", r -> r.path("/user/**")
-                        .uri(userServiceUrl))
 
-                .route("ProfileMS-PATIENT", r -> r.path("/profile/patient/**")
-                        .uri(profileServiceUrl))
+                .route("USER", r -> r
+                        .path("/user/**")
+                        .uri("lb://user-ms"))
 
-                .route("ProfileMS-DOCTOR", r -> r.path("/profile/doctor/**")
-                        .uri(profileServiceUrl))
+                .route("PROFILE_PATIENT", r -> r
+                        .path("/profile/patient/**")
+                        .uri("lb://profile-ms"))
 
-                .route("ProfileMS-API", r -> r.path("/api/**")
-                        .uri(profileServiceUrl))
+                .route("PROFILE_DOCTOR", r -> r
+                        .path("/profile/doctor/**")
+                        .uri("lb://profile-ms"))
 
-                .route("AppointmentMS-API", r -> r.path("/appointment/**")
-                        .uri(appointmentServiceUrl))
+                .route("PROFILE_API", r -> r
+                        .path("/api/**")
+                        .uri("lb://profile-ms"))
 
-                .route("AppointmentMS-GraphQL", r -> r.path("/graphql")
-                        .uri(appointmentServiceUrl))
+                .route("APPOINTMENT_API", r -> r
+                        .path("/appointment/**")
+                        .uri("lb://appointment-ms"))
+
+                .route("APPOINTMENT_GRAPHQL", r -> r
+                        .path("/graphql")
+                        .uri("lb://appointment-ms"))
 
                 .build();
     }

@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: ProfileMS
+    name: profile-ms
 
   datasource:
     url: ${DB_URL:jdbc:mysql://localhost:3306/hms_db}
@@ -21,7 +21,7 @@ spring:
 
 eureka:
   instance:
-    instance-id: ${spring.application.name}:${random.uuid}
+    prefer-ip-address: true
   client:
     service-url:
       defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}

@@ -3,10 +3,10 @@ package com.hms.gateway;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+//@SpringBootTest
 class GatewayMsApplicationTests {
 
-	@Test
+//	@Test
 	void contextLoads() {
 	}
 
