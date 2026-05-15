@@ -24,23 +24,23 @@ pipeline {
 
             steps {
 
-                dir('eureka') {
+                dir('hms-backend/eureka') {
                     sh 'mvn clean package -DskipTests'
                 }
 
-                dir('gatewayMS') {
+                dir('hms-backend/gatewayMS') {
                     sh 'mvn clean package -DskipTests'
                 }
 
-                dir('userMS') {
+                dir('hms-backend/userMS') {
                     sh 'mvn clean package -DskipTests'
                 }
 
-                dir('profileMS') {
+                dir('hms-backend/profileMS') {
                     sh 'mvn clean package -DskipTests'
                 }
 
-                dir('appointment') {
+                dir('hms-backend/appointment') {
                     sh 'mvn clean package -DskipTests'
                 }
             }
@@ -50,15 +50,15 @@ pipeline {
 
             steps {
 
-                sh 'docker build -t gourav60/eureka:${TAG} ./eureka'
+                sh 'docker build -t gourav60/eureka:${TAG} ./hms-backend/eureka'
 
-                sh 'docker build -t gourav60/gateway:${TAG} ./gatewayMS'
+                sh 'docker build -t gourav60/gateway:${TAG} ./hms-backend/gatewayMS'
 
-                sh 'docker build -t gourav60/user-ms:${TAG} ./userMS'
+                sh 'docker build -t gourav60/user-ms:${TAG} ./hms-backend/userMS'
 
-                sh 'docker build -t gourav60/profile-ms:${TAG} ./profileMS'
+                sh 'docker build -t gourav60/profile-ms:${TAG} ./hms-backend/profileMS'
 
-                sh 'docker build -t gourav60/appointment-ms:${TAG} ./appointment'
+                sh 'docker build -t gourav60/appointment-ms:${TAG} ./hms-backend/appointment'
             }
         }
 
@@ -97,7 +97,7 @@ pipeline {
 
             steps {
 
-                sh 'kubectl apply -f K8s/'
+                sh 'kubectl apply -f hms-backend/K8s/'
 
                 sh 'kubectl rollout restart deployment eureka-deployment'
 
