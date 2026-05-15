@@ -6,7 +6,7 @@ pipeline {
 
         DOCKERHUB = "gourav60"
 
-        TAG = "${BUILD_NUMBER}"
+        TAG = "v1"
 
     }
 
