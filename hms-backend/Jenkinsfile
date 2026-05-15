@@ -1,6 +1,17 @@
 pipeline {
 
-    agent any
+    agent {
+        docker {
+            image 'amazoncorretto:17-alpine'
+        }
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh './mvnw clean package'
+            }
+        }
+    }
 
     environment {
 
