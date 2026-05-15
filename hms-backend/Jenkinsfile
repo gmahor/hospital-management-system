@@ -36,7 +36,7 @@ pipeline {
                     sh 'mvn clean package -DskipTests'
                 }
 
-                dir('hms-backend/profileMS') {
+                dir('hms-backend/ProfileMS') {
                     sh 'mvn clean package -DskipTests'
                 }
 
