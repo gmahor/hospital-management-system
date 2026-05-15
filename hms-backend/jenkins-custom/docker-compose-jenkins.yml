@@ -16,7 +16,7 @@ services:
     volumes:
       - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
-#      - /usr/bin/docker:/usr/bin/docker
+      - C:/Users/user/.kube:/root/.kube
 
 volumes:
   jenkins_home:
