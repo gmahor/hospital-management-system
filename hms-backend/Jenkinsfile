@@ -56,7 +56,7 @@ pipeline {
 
                 sh 'docker build -t gourav60/user-ms:${TAG} ./hms-backend/userMS'
 
-                sh 'docker build -t gourav60/profile-ms:${TAG} ./hms-backend/profileMS'
+                sh 'docker build -t gourav60/profile-ms:${TAG} ./hms-backend/ProfileMS'
 
                 sh 'docker build -t gourav60/appointment-ms:${TAG} ./hms-backend/appointment'
             }
