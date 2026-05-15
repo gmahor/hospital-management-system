@@ -19,15 +19,16 @@
         </processorPath>
         <module name="userMS" />
       </profile>
-      <profile name="Annotation profile for gatewayMS" enabled="true">
+      <profile name="Annotation profile for ProfileMS" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.32/lombok-1.18.32.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.34/lombok-1.18.34.jar" />
         </processorPath>
-        <module name="gatewayMS" />
         <module name="ProfileMS" />
+        <module name="gatewayMS" />
       </profile>
     </annotationProcessing>
   </component>
