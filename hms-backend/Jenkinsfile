@@ -1,0 +1,124 @@
+pipeline {
+
+    agent any
+
+    environment {
+
+        DOCKERHUB = "gourav60"
+
+        TAG = "${BUILD_NUMBER}"
+
+    }
+
+    stages {
+
+        stage('Clone Code') {
+
+            steps {
+                git branch: 'main',
+                        url: 'https://github.com/gmahor/hospital-management-system.git'
+            }
+        }
+
+        stage('Build Jars') {
+
+            steps {
+
+                dir('eureka') {
+                    sh 'mvn clean package -DskipTests'
+                }
+
+                dir('gatewayMS') {
+                    sh 'mvn clean package -DskipTests'
+                }
+
+                dir('userMS') {
+                    sh 'mvn clean package -DskipTests'
+                }
+
+                dir('profileMS') {
+                    sh 'mvn clean package -DskipTests'
+                }
+
+                dir('appointment') {
+                    sh 'mvn clean package -DskipTests'
+                }
+            }
+        }
+
+        stage('Docker Build') {
+
+            steps {
+
+                sh 'docker build -t gourav60/eureka:${TAG} ./eureka'
+
+                sh 'docker build -t gourav60/gateway:${TAG} ./gatewayMS'
+
+                sh 'docker build -t gourav60/user-ms:${TAG} ./userMS'
+
+                sh 'docker build -t gourav60/profile-ms:${TAG} ./profileMS'
+
+                sh 'docker build -t gourav60/appointment-ms:${TAG} ./appointment'
+            }
+        }
+
+        stage('Docker Login') {
+
+            steps {
+
+                withCredentials([usernamePassword(
+                        credentialsId: 'dockerhub-creds',
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                )]) {
+
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                }
+            }
+        }
+
+        stage('Docker Push') {
+
+            steps {
+
+                sh 'docker push gourav60/eureka:${TAG}'
+
+                sh 'docker push gourav60/gateway:${TAG}'
+
+                sh 'docker push gourav60/user-ms:${TAG}'
+
+                sh 'docker push gourav60/profile-ms:${TAG}'
+
+                sh 'docker push gourav60/appointment-ms:${TAG}'
+            }
+        }
+
+        stage('Deploy To Kubernetes') {
+
+            steps {
+
+                sh 'kubectl apply -f k8s/'
+
+                sh 'kubectl rollout restart deployment eureka-deployment'
+
+                sh 'kubectl rollout restart deployment gateway-deployment'
+
+                sh 'kubectl rollout restart deployment user-ms-deployment'
+
+                sh 'kubectl rollout restart deployment profile-ms-deployment'
+
+                sh 'kubectl rollout restart deployment appointment-ms-deployment'
+            }
+        }
+
+        stage('Verify') {
+
+            steps {
+
+                sh 'kubectl get pods'
+
+                sh 'kubectl get svc'
+            }
+        }
+    }
+}
