@@ -34,32 +34,21 @@ pipeline {
 
                 script {
 
-                    if (env.BUILD_NUMBER == "1") {
+                    echo "Force Full Build"
 
-                        echo "First Build Detected"
-
-                        env.CHANGED_FILES = """
-                        hms-backend/eureka/
-                        hms-backend/gatewayMS/
-                        hms-backend/userMS/
-                        hms-backend/ProfileMS/
-                        hms-backend/appointment/
-                        """
-
-                    } else {
-
-                        env.CHANGED_FILES = sh(
-                                script: "git diff --name-only HEAD~1 HEAD",
-                                returnStdout: true
-                        ).trim()
-                    }
+                    env.CHANGED_FILES = """
+                    hms-backend/eureka/
+                    hms-backend/gatewayMS/
+                    hms-backend/userMS/
+                    hms-backend/ProfileMS/
+                    hms-backend/appointment/
+                    """
 
                     echo "Changed Files:"
                     echo env.CHANGED_FILES
                 }
             }
         }
-
         // =========================================
         // DOCKER LOGIN
         // =========================================
