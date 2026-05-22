@@ -2,6 +2,7 @@ package com.hms.profile.services.impl;
 
 import com.hms.profile.dto.DoctorReqDto;
 import com.hms.profile.dto.DoctorRespDto;
+import com.hms.profile.dto.DoctorsDropdown;
 import com.hms.profile.dto.UpdateDoctorReqDto;
 import com.hms.profile.entities.Doctor;
 import com.hms.profile.exceptions.DoctorAlreadyFoundException;
@@ -12,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -67,5 +69,10 @@ public class DoctorServiceImpl implements IDoctorService {
     @Override
     public boolean isDoctorExist(long id) {
         return doctorRepository.existsById(id);
+    }
+
+    @Override
+    public List<DoctorsDropdown> getDoctorsName() {
+        return doctorRepository.getDoctorsName();
     }
 }

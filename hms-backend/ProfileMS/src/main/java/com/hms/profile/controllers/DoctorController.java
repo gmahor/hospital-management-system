@@ -1,17 +1,22 @@
 package com.hms.profile.controllers;
 
+import com.hms.profile.constants.MessageConstant;
 import com.hms.profile.dto.DoctorReqDto;
 import com.hms.profile.dto.DoctorRespDto;
+import com.hms.profile.dto.DoctorsDropdown;
 import com.hms.profile.dto.UpdateDoctorReqDto;
-import com.hms.profile.dto.UpdatePatentReqDto;
 import com.hms.profile.services.IDoctorService;
 import com.hms.profile.utils.ResponseHandler;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@Slf4j
 @RestController
 @RequestMapping("/profile/doctor")
 @RequiredArgsConstructor
@@ -46,5 +51,17 @@ public class DoctorController {
         String msg = iDoctorService.updateDoctorDetails(updateDoctorReqDto);
         return responseHandler.response("", msg, true, HttpStatus.OK);
     }
+
+    @PutMapping("/getDoctorsDropdown")
+    public ResponseEntity<Object> getDoctorsDropdown() {
+        try {
+            List<DoctorsDropdown> doctorsName = iDoctorService.getDoctorsName();
+            return responseHandler.response(doctorsName, MessageConstant.DOCTORS_NAMES_FOUND, true, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(MessageConstant.ERROR_WHILE_GETTING_DOCTORS_NAMES + ": ", e);
+            return responseHandler.response("", MessageConstant.ERROR_WHILE_GETTING_DOCTORS_NAMES, true, HttpStatus.OK);
+        }
+    }
+
 
 }
