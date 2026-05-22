@@ -15,7 +15,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
     boolean existsByNameAndEmail(String name, String email);
 
-    @Query(nativeQuery = true, name = "SELECT d.id as id , d.name as name From doctors d")
+    @Query(value = "SELECT d.id AS id, d.name AS name FROM doctors d", nativeQuery = true)
     List<DoctorsDropdown> getDoctorsName();
 
 }
