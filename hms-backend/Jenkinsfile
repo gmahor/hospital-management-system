@@ -35,7 +35,14 @@ pipeline {
                 script {
 
                     def hasPreviousCommit = sh(
-                            script: "git rev-parse HEAD^ >/dev/null 2>&1; echo $?",
+                            script: '''
+                                if git rev-parse HEAD^ >/dev/null 2>&1
+                                then
+                                    echo 0
+                                else
+                                    echo 1
+                                fi
+                            ''',
                             returnStdout: true
                     ).trim()
 
