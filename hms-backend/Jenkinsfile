@@ -6,8 +6,7 @@ pipeline {
 
         DOCKERHUB = "gourav60"
 
-        TAG = "v1"
-
+        TAG = "${BUILD_NUMBER}"
     }
 
     stages {

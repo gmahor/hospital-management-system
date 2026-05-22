@@ -23,7 +23,7 @@ services:
   eureka:
     build:
       context: ./eureka
-    image: "gourav60/eureka:v1"
+    image: "gourav60/eureka"
     container_name: eureka
     restart: always
     environment:
@@ -48,7 +48,7 @@ services:
   gateway:
     build:
       context: ./gatewayMS
-    image: "gourav60/gateway:v1"
+    image: "gourav60/gateway"
     container_name: gateway-ms
     restart: always
     depends_on:
@@ -75,7 +75,7 @@ services:
   user-ms:
     build:
       context: ./userMS
-    image: "gourav60/user-ms:v1"
+    image: "gourav60/user-ms"
     container_name: user-ms
     restart: always
     depends_on:
@@ -109,7 +109,7 @@ services:
   profile-ms:
     build:
       context: ./profileMS
-    image: "gourav60/profile-ms:v1"
+    image: "gourav60/profile-ms"
     container_name: profile-ms
     restart: always
     depends_on:
@@ -144,7 +144,7 @@ services:
   appointment-ms:
     build:
       context: ./appointment
-    image: "gourav60/appointment-ms:v1"
+    image: "gourav60/appointment-ms"
     container_name: appointment-ms
     restart: always
     depends_on:
