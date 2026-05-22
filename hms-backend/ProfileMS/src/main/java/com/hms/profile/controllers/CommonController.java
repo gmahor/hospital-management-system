@@ -21,6 +21,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommonController {
 
+
+
     private final ResponseHandler responseHandler;
 
     private final IDoctorService doctorService;
