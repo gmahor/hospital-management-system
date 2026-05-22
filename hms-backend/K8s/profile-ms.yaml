@@ -19,10 +19,26 @@ spec:
       containers:
         - name: profile-ms
 
-          image: gourav60/profile-ms:v1
+          image: gourav60/profile-ms:latest
+
+          imagePullPolicy: Always
 
           ports:
             - containerPort: 8081
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            initialDelaySeconds: 60
+            periodSeconds: 20
 
           env:
             - name: DB_URL

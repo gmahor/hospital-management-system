@@ -17,7 +17,11 @@ spec:
     spec:
       containers:
         - name: eureka
-          image: gourav60/eureka:v1
+
+          image: gourav60/eureka:latest
+
+          imagePullPolicy: Always
+
           ports:
             - containerPort: 8761
 

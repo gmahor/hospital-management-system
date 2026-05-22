@@ -19,10 +19,26 @@ spec:
       containers:
         - name: user-ms
 
-          image: gourav60/user-ms:v1
+          image: gourav60/user-ms:latest
+
+          imagePullPolicy: Always
 
           ports:
             - containerPort: 8080
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 20
 
           env:
             - name: DB_URL

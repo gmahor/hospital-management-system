@@ -34,13 +34,33 @@ pipeline {
 
                 script {
 
-                    CHANGED_FILES = sh(
-                            script: "git diff --name-only HEAD^ HEAD || true",
+                    def hasPreviousCommit = sh(
+                            script: "git rev-parse HEAD^ >/dev/null 2>&1; echo $?",
                             returnStdout: true
                     ).trim()
 
+                    if (hasPreviousCommit == "0") {
+
+                        env.CHANGED_FILES = sh(
+                                script: "git diff --name-only origin/main...HEAD",
+                                returnStdout: true
+                        ).trim()
+
+                    } else {
+
+                        echo "First Build Detected"
+
+                        env.CHANGED_FILES = """
+                hms-backend/eureka/
+                hms-backend/gatewayMS/
+                hms-backend/userMS/
+                hms-backend/ProfileMS/
+                hms-backend/appointment/
+                """
+                    }
+
                     echo "Changed Files:"
-                    echo CHANGED_FILES
+                    echo env.CHANGED_FILES
                 }
             }
         }
@@ -72,7 +92,7 @@ pipeline {
 
             when {
                 expression {
-                    return CHANGED_FILES.contains("hms-backend/eureka/")
+                    return env.CHANGED_FILES.contains("hms-backend/eureka/")
                 }
             }
 
@@ -83,7 +103,9 @@ pipeline {
                     sh 'mvn clean package -DskipTests'
 
                     sh """
-                    docker build -t ${DOCKERHUB}/eureka:${TAG} .
+                    docker build \
+                    -t ${DOCKERHUB}/eureka:${TAG} \
+                    -t ${DOCKERHUB}/eureka:latest .
                     """
                 }
             }
@@ -93,13 +115,15 @@ pipeline {
 
             when {
                 expression {
-                    return CHANGED_FILES.contains("hms-backend/eureka/")
+                    return env.CHANGED_FILES.contains("hms-backend/eureka/")
                 }
             }
 
             steps {
 
                 sh "docker push ${DOCKERHUB}/eureka:${TAG}"
+
+                sh "docker push ${DOCKERHUB}/eureka:latest"
             }
         }
 
@@ -107,7 +131,7 @@ pipeline {
 
             when {
                 expression {
-                    return CHANGED_FILES.contains("hms-backend/eureka/")
+                    return env.CHANGED_FILES.contains("hms-backend/eureka/")
                 }
             }
 
@@ -130,7 +154,7 @@ pipeline {
 
             when {
                 expression {
-                    return CHANGED_FILES.contains("hms-backend/gatewayMS/")
+                    return env.CHANGED_FILES.contains("hms-backend/gatewayMS/")
                 }
             }
 
@@ -141,7 +165,9 @@ pipeline {
                     sh 'mvn clean package -DskipTests'
 
                     sh """
-                    docker build -t ${DOCKERHUB}/gateway:${TAG} .
+                    docker build \
+                    -t ${DOCKERHUB}/gateway:${TAG} \
+                    -t ${DOCKERHUB}/gateway:latest .
                     """
                 }
             }
@@ -151,13 +177,15 @@ pipeline {
 
             when {
                 expression {
-                    return CHANGED_FILES.contains("hms-backend/gatewayMS/")
+                    return env.CHANGED_FILES.contains("hms-backend/gatewayMS/")
                 }
             }
 
             steps {
 
                 sh "docker push ${DOCKERHUB}/gateway:${TAG}"
+
+                sh "docker push ${DOCKERHUB}/gateway:latest"
             }
         }
 
@@ -165,7 +193,7 @@ pipeline {
 
             when {
                 expression {
-                    return CHANGED_FILES.contains("hms-backend/gatewayMS/")
+                    return env.CHANGED_FILES.contains("hms-backend/gatewayMS/")
                 }
             }
 
@@ -188,7 +216,7 @@ pipeline {
 
             when {
                 expression {
-                    return CHANGED_FILES.contains("hms-backend/userMS/")
+                    return env.CHANGED_FILES.contains("hms-backend/userMS/")
                 }
             }
 
@@ -199,7 +227,9 @@ pipeline {
                     sh 'mvn clean package -DskipTests'
 
                     sh """
-                    docker build -t ${DOCKERHUB}/user-ms:${TAG} .
+                    docker build \
+                    -t ${DOCKERHUB}/user-ms:${TAG} \
+                    -t ${DOCKERHUB}/user-ms:latest .
                     """
                 }
             }
@@ -209,13 +239,15 @@ pipeline {
 
             when {
                 expression {
-                    return CHANGED_FILES.contains("hms-backend/userMS/")
+                    return env.CHANGED_FILES.contains("hms-backend/userMS/")
                 }
             }
 
             steps {
 
                 sh "docker push ${DOCKERHUB}/user-ms:${TAG}"
+
+                sh "docker push ${DOCKERHUB}/user-ms:latest"
             }
         }
 
@@ -223,7 +255,7 @@ pipeline {
 
             when {
                 expression {
-                    return CHANGED_FILES.contains("hms-backend/userMS/")
+                    return env.CHANGED_FILES.contains("hms-backend/userMS/")
                 }
             }
 
@@ -246,7 +278,7 @@ pipeline {
 
             when {
                 expression {
-                    return CHANGED_FILES.contains("hms-backend/ProfileMS/")
+                    return env.CHANGED_FILES.contains("hms-backend/ProfileMS/")
                 }
             }
 
@@ -257,7 +289,9 @@ pipeline {
                     sh 'mvn clean package -DskipTests'
 
                     sh """
-                    docker build -t ${DOCKERHUB}/profile-ms:${TAG} .
+                    docker build \
+                    -t ${DOCKERHUB}/profile-ms:${TAG} \
+                    -t ${DOCKERHUB}/profile-ms:latest .
                     """
                 }
             }
@@ -267,13 +301,15 @@ pipeline {
 
             when {
                 expression {
-                    return CHANGED_FILES.contains("hms-backend/ProfileMS/")
+                    return env.CHANGED_FILES.contains("hms-backend/ProfileMS/")
                 }
             }
 
             steps {
 
                 sh "docker push ${DOCKERHUB}/profile-ms:${TAG}"
+
+                sh "docker push ${DOCKERHUB}/profile-ms:latest"
             }
         }
 
@@ -281,7 +317,7 @@ pipeline {
 
             when {
                 expression {
-                    return CHANGED_FILES.contains("hms-backend/ProfileMS/")
+                    return env.CHANGED_FILES.contains("hms-backend/ProfileMS/")
                 }
             }
 
@@ -304,7 +340,7 @@ pipeline {
 
             when {
                 expression {
-                    return CHANGED_FILES.contains("hms-backend/appointment/")
+                    return env.CHANGED_FILES.contains("hms-backend/appointment/")
                 }
             }
 
@@ -315,7 +351,9 @@ pipeline {
                     sh 'mvn clean package -DskipTests'
 
                     sh """
-                    docker build -t ${DOCKERHUB}/appointment-ms:${TAG} .
+                    docker build \
+                    -t ${DOCKERHUB}/appointment-ms:${TAG} \
+                    -t ${DOCKERHUB}/appointment-ms:latest .
                     """
                 }
             }
@@ -325,13 +363,15 @@ pipeline {
 
             when {
                 expression {
-                    return CHANGED_FILES.contains("hms-backend/appointment/")
+                    return env.CHANGED_FILES.contains("hms-backend/appointment/")
                 }
             }
 
             steps {
 
                 sh "docker push ${DOCKERHUB}/appointment-ms:${TAG}"
+
+                sh "docker push ${DOCKERHUB}/appointment-ms:latest"
             }
         }
 
@@ -339,7 +379,7 @@ pipeline {
 
             when {
                 expression {
-                    return CHANGED_FILES.contains("hms-backend/appointment/")
+                    return env.CHANGED_FILES.contains("hms-backend/appointment/")
                 }
             }
 
