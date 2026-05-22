@@ -34,36 +34,24 @@ pipeline {
 
                 script {
 
-                    def hasPreviousCommit = sh(
-                            script: '''
-                                if git rev-parse HEAD^ >/dev/null 2>&1
-                                then
-                                    echo 0
-                                else
-                                    echo 1
-                                fi
-                            ''',
-                            returnStdout: true
-                    ).trim()
-
-                    if (hasPreviousCommit == "0") {
-
-                        env.CHANGED_FILES = sh(
-                                script: "git diff --name-only origin/main...HEAD",
-                                returnStdout: true
-                        ).trim()
-
-                    } else {
+                    if (env.BUILD_NUMBER == "1") {
 
                         echo "First Build Detected"
 
                         env.CHANGED_FILES = """
-                hms-backend/eureka/
-                hms-backend/gatewayMS/
-                hms-backend/userMS/
-                hms-backend/ProfileMS/
-                hms-backend/appointment/
-                """
+                        hms-backend/eureka/
+                        hms-backend/gatewayMS/
+                        hms-backend/userMS/
+                        hms-backend/ProfileMS/
+                        hms-backend/appointment/
+                        """
+
+                    } else {
+
+                        env.CHANGED_FILES = sh(
+                                script: "git diff --name-only HEAD~1 HEAD",
+                                returnStdout: true
+                        ).trim()
                     }
 
                     echo "Changed Files:"
