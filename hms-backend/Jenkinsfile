@@ -11,101 +11,352 @@ pipeline {
 
     stages {
 
+        // =========================================
+        // CLONE CODE
+        // =========================================
+
         stage('Clone Code') {
 
             steps {
+
                 git branch: 'main',
                         url: 'https://github.com/gmahor/hospital-management-system.git'
             }
         }
 
-        stage('Build Jars') {
+        // =========================================
+        // DETECT CHANGES
+        // =========================================
+
+        stage('Detect Changes') {
 
             steps {
 
-                dir('hms-backend/eureka') {
-                    sh 'mvn clean package -DskipTests'
-                }
+                script {
 
-                dir('hms-backend/gatewayMS') {
-                    sh 'mvn clean package -DskipTests'
-                }
+                    CHANGED_FILES = sh(
+                            script: "git diff --name-only HEAD^ HEAD || true",
+                            returnStdout: true
+                    ).trim()
 
-                dir('hms-backend/userMS') {
-                    sh 'mvn clean package -DskipTests'
-                }
-
-                dir('hms-backend/ProfileMS') {
-                    sh 'mvn clean package -DskipTests'
-                }
-
-                dir('hms-backend/appointment') {
-                    sh 'mvn clean package -DskipTests'
+                    echo "Changed Files:"
+                    echo CHANGED_FILES
                 }
             }
         }
 
-        stage('Docker Build') {
-
-            steps {
-
-                sh 'docker build -t gourav60/eureka:${TAG} ./hms-backend/eureka'
-
-                sh 'docker build -t gourav60/gateway:${TAG} ./hms-backend/gatewayMS'
-
-                sh 'docker build -t gourav60/user-ms:${TAG} ./hms-backend/userMS'
-
-                sh 'docker build -t gourav60/profile-ms:${TAG} ./hms-backend/ProfileMS'
-
-                sh 'docker build -t gourav60/appointment-ms:${TAG} ./hms-backend/appointment'
-            }
-        }
+        // =========================================
+        // DOCKER LOGIN
+        // =========================================
 
         stage('Docker Login') {
+
             steps {
+
                 withCredentials([usernamePassword(
                         credentialsId: 'dockerhub-creds',
                         usernameVariable: 'DOCKER_USER',
                         passwordVariable: 'DOCKER_PASS'
                 )]) {
+
                     sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
                 }
             }
         }
 
-        stage('Docker Push') {
+        // =========================================
+        // EUREKA
+        // =========================================
+
+        stage('Build Eureka') {
+
+            when {
+                expression {
+                    return CHANGED_FILES.contains("hms-backend/eureka/")
+                }
+            }
 
             steps {
 
-                sh 'docker push gourav60/eureka:${TAG}'
+                dir('hms-backend/eureka') {
 
-                sh 'docker push gourav60/gateway:${TAG}'
+                    sh 'mvn clean package -DskipTests'
 
-                sh 'docker push gourav60/user-ms:${TAG}'
-
-                sh 'docker push gourav60/profile-ms:${TAG}'
-
-                sh 'docker push gourav60/appointment-ms:${TAG}'
+                    sh """
+                    docker build -t ${DOCKERHUB}/eureka:${TAG} .
+                    """
+                }
             }
         }
 
-        stage('Deploy To Kubernetes') {
+        stage('Push Eureka') {
+
+            when {
+                expression {
+                    return CHANGED_FILES.contains("hms-backend/eureka/")
+                }
+            }
 
             steps {
 
-                sh 'kubectl apply -f hms-backend/K8s/'
-
-                sh 'kubectl rollout restart deployment eureka-deployment'
-
-                sh 'kubectl rollout restart deployment gateway-deployment'
-
-                sh 'kubectl rollout restart deployment user-ms-deployment'
-
-                sh 'kubectl rollout restart deployment profile-ms-deployment'
-
-                sh 'kubectl rollout restart deployment appointment-ms-deployment'
+                sh "docker push ${DOCKERHUB}/eureka:${TAG}"
             }
         }
+
+        stage('Deploy Eureka') {
+
+            when {
+                expression {
+                    return CHANGED_FILES.contains("hms-backend/eureka/")
+                }
+            }
+
+            steps {
+
+                sh """
+                kubectl set image deployment/eureka-deployment \
+                eureka=${DOCKERHUB}/eureka:${TAG}
+                """
+
+                sh 'kubectl rollout status deployment/eureka-deployment'
+            }
+        }
+
+        // =========================================
+        // GATEWAY
+        // =========================================
+
+        stage('Build Gateway') {
+
+            when {
+                expression {
+                    return CHANGED_FILES.contains("hms-backend/gatewayMS/")
+                }
+            }
+
+            steps {
+
+                dir('hms-backend/gatewayMS') {
+
+                    sh 'mvn clean package -DskipTests'
+
+                    sh """
+                    docker build -t ${DOCKERHUB}/gateway:${TAG} .
+                    """
+                }
+            }
+        }
+
+        stage('Push Gateway') {
+
+            when {
+                expression {
+                    return CHANGED_FILES.contains("hms-backend/gatewayMS/")
+                }
+            }
+
+            steps {
+
+                sh "docker push ${DOCKERHUB}/gateway:${TAG}"
+            }
+        }
+
+        stage('Deploy Gateway') {
+
+            when {
+                expression {
+                    return CHANGED_FILES.contains("hms-backend/gatewayMS/")
+                }
+            }
+
+            steps {
+
+                sh """
+                kubectl set image deployment/gateway-deployment \
+                gateway=${DOCKERHUB}/gateway:${TAG}
+                """
+
+                sh 'kubectl rollout status deployment/gateway-deployment'
+            }
+        }
+
+        // =========================================
+        // USER SERVICE
+        // =========================================
+
+        stage('Build UserMS') {
+
+            when {
+                expression {
+                    return CHANGED_FILES.contains("hms-backend/userMS/")
+                }
+            }
+
+            steps {
+
+                dir('hms-backend/userMS') {
+
+                    sh 'mvn clean package -DskipTests'
+
+                    sh """
+                    docker build -t ${DOCKERHUB}/user-ms:${TAG} .
+                    """
+                }
+            }
+        }
+
+        stage('Push UserMS') {
+
+            when {
+                expression {
+                    return CHANGED_FILES.contains("hms-backend/userMS/")
+                }
+            }
+
+            steps {
+
+                sh "docker push ${DOCKERHUB}/user-ms:${TAG}"
+            }
+        }
+
+        stage('Deploy UserMS') {
+
+            when {
+                expression {
+                    return CHANGED_FILES.contains("hms-backend/userMS/")
+                }
+            }
+
+            steps {
+
+                sh """
+                kubectl set image deployment/user-ms-deployment \
+                user-ms=${DOCKERHUB}/user-ms:${TAG}
+                """
+
+                sh 'kubectl rollout status deployment/user-ms-deployment'
+            }
+        }
+
+        // =========================================
+        // PROFILE SERVICE
+        // =========================================
+
+        stage('Build ProfileMS') {
+
+            when {
+                expression {
+                    return CHANGED_FILES.contains("hms-backend/ProfileMS/")
+                }
+            }
+
+            steps {
+
+                dir('hms-backend/ProfileMS') {
+
+                    sh 'mvn clean package -DskipTests'
+
+                    sh """
+                    docker build -t ${DOCKERHUB}/profile-ms:${TAG} .
+                    """
+                }
+            }
+        }
+
+        stage('Push ProfileMS') {
+
+            when {
+                expression {
+                    return CHANGED_FILES.contains("hms-backend/ProfileMS/")
+                }
+            }
+
+            steps {
+
+                sh "docker push ${DOCKERHUB}/profile-ms:${TAG}"
+            }
+        }
+
+        stage('Deploy ProfileMS') {
+
+            when {
+                expression {
+                    return CHANGED_FILES.contains("hms-backend/ProfileMS/")
+                }
+            }
+
+            steps {
+
+                sh """
+                kubectl set image deployment/profile-ms-deployment \
+                profile-ms=${DOCKERHUB}/profile-ms:${TAG}
+                """
+
+                sh 'kubectl rollout status deployment/profile-ms-deployment'
+            }
+        }
+
+        // =========================================
+        // APPOINTMENT SERVICE
+        // =========================================
+
+        stage('Build AppointmentMS') {
+
+            when {
+                expression {
+                    return CHANGED_FILES.contains("hms-backend/appointment/")
+                }
+            }
+
+            steps {
+
+                dir('hms-backend/appointment') {
+
+                    sh 'mvn clean package -DskipTests'
+
+                    sh """
+                    docker build -t ${DOCKERHUB}/appointment-ms:${TAG} .
+                    """
+                }
+            }
+        }
+
+        stage('Push AppointmentMS') {
+
+            when {
+                expression {
+                    return CHANGED_FILES.contains("hms-backend/appointment/")
+                }
+            }
+
+            steps {
+
+                sh "docker push ${DOCKERHUB}/appointment-ms:${TAG}"
+            }
+        }
+
+        stage('Deploy AppointmentMS') {
+
+            when {
+                expression {
+                    return CHANGED_FILES.contains("hms-backend/appointment/")
+                }
+            }
+
+            steps {
+
+                sh """
+                kubectl set image deployment/appointment-ms-deployment \
+                appointment-ms=${DOCKERHUB}/appointment-ms:${TAG}
+                """
+
+                sh 'kubectl rollout status deployment/appointment-ms-deployment'
+            }
+        }
+
+        // =========================================
+        // VERIFY
+        // =========================================
 
         stage('Verify') {
 
