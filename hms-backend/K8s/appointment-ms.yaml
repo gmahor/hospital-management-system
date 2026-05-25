@@ -26,20 +26,6 @@ spec:
           ports:
             - containerPort: 8082
 
-          readinessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8082
-            initialDelaySeconds: 30
-            periodSeconds: 10
-
-          livenessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8082
-            initialDelaySeconds: 60
-            periodSeconds: 20
-
           env:
             - name: DB_URL
               value: jdbc:mysql://mysql-service:3306/hms_db
