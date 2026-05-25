@@ -52,7 +52,7 @@ public class DoctorController {
         return responseHandler.response("", msg, true, HttpStatus.OK);
     }
 
-    @PutMapping("/getDoctorsDropdown")
+    @GetMapping("/getDoctorsDropdown")
     public ResponseEntity<Object> getDoctorsDropdown() {
         try {
             List<DoctorsDropdown> doctorsName = iDoctorService.getDoctorsName();
