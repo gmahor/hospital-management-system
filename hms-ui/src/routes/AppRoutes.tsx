@@ -1,8 +1,11 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { DoctorProfile } from "../components/doctor/DoctorProfile";
+import { ProfileLoaderApis } from "../components/doctor/DoctorProfileTable";
 import { Login } from "../components/Login";
-import Appointment from "../components/patient/Appointment";
+import Appointment from "../components/patient/appointment/Appointment";
+import { doctorsAndAppointmentReasons } from "../components/patient/appointment/AppointmentModal";
 import { Profile } from "../components/patient/Profile";
+import { bloodGroups } from "../components/patient/ProfileTable";
 import Random from "../components/Random";
 import { Register } from "../components/Register";
 import { AdminDashboard } from "../layout/AdminDashboard";
@@ -10,8 +13,6 @@ import { DoctorDashboard } from "../layout/DoctorDashboard";
 import { PatientDashboard } from "../layout/PatientDashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
-import { bloodGroups } from "../components/patient/ProfileTable";
-import { ProfileLoaderApis } from "../components/doctor/DoctorProfileTable";
 
 const router = createBrowserRouter([
   {
@@ -66,7 +67,11 @@ const router = createBrowserRouter([
         element: <Profile />,
         loader: bloodGroups,
       },
-      { path: "appointment", element: <Appointment /> },
+      {
+        path: "appointment",
+        element: <Appointment />,
+        loader: doctorsAndAppointmentReasons,
+      },
       { path: "booking", element: <Random /> },
     ],
   },

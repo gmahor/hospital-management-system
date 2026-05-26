@@ -9,7 +9,7 @@ import { removeTokens } from "../slices/JwtSlice";
 import { removeUser } from "../slices/UserSlice";
 import { ProfileMenu } from "./ProfileMenu";
 
-export const Header = ({ data }: { data: any }) => {
+export const Header = ({ data }: { data?: Record<string, unknown> | null }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleLogout = () => {

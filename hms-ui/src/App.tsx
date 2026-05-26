@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import "./App.css";
 import AppRoutes from "./routes/AppRoutes";
 import Loading from "./components/Loading";
+import { PrimeReactProvider } from "primereact/api";
 
 const theme = createTheme({
   focusRing: "never",
@@ -55,9 +56,11 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <MantineProvider theme={theme}>
-        <Notifications />
-        {isLoading && <Loading />}
-        <AppRoutes />
+        <PrimeReactProvider>
+          <Notifications />
+          {isLoading && <Loading />}
+          <AppRoutes />
+        </PrimeReactProvider>
       </MantineProvider>
     </QueryClientProvider>
   );
