@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -75,5 +76,17 @@ public class AppointmentController {
             return responseHandler.response("", "Error while fetching appointment with patient and doctor details", false, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/getAllAppointmentReasons")
+    public ResponseEntity<Object> getAllAppointmentReasons() {
+        try {
+            List<String> appointmentReasons = appointmentService.getAllAppointmentReasons();
+            return responseHandler.response(appointmentReasons, null, true, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return responseHandler.response("", "Error while fetching appointment reasons", false, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
 }

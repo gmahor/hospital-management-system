@@ -3,6 +3,7 @@ package com.hms.services;
 import com.hms.dto.AppointmentReqDto;
 import com.hms.dto.AppointmentRespDto;
 
+import java.util.List;
 import java.util.Map;
 
 public interface AppointmentService {
@@ -18,4 +19,6 @@ public interface AppointmentService {
     AppointmentRespDto getAppointmentById(Long appointmentId);
 
     Map<String, Object> getAppointmentWithPatientAndDoctorDetails(long appointmentId, String token) throws Exception;
+
+    List<String> getAllAppointmentReasons();
 }

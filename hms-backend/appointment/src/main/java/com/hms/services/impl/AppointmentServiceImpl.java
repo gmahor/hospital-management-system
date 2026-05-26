@@ -5,6 +5,7 @@ import com.hms.dto.AppointmentRespDto;
 import com.hms.dto.DoctorRespDto;
 import com.hms.dto.PatientRespDto;
 import com.hms.entities.Appointment;
+import com.hms.enums.AppointmentReasons;
 import com.hms.enums.AppointmentStatus;
 import com.hms.exceptions.AppointmentException;
 import com.hms.repositories.AppointmentRepository;
@@ -15,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -87,5 +89,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         map.put("patient_details",patientRespDto);
         map.put("doctor_details",doctorRespDto);
         return map;
+    }
+
+    @Override
+    public List<String> getAllAppointmentReasons() {
+        return AppointmentReasons.getValues();
     }
 }
