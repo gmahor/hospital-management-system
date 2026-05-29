@@ -4,6 +4,7 @@ import com.hms.dto.AppointmentReqDto;
 import com.hms.dto.AppointmentRespDto;
 import com.hms.dto.DoctorRespDto;
 import com.hms.dto.PatientRespDto;
+import com.hms.dto.ValueInterface.AppointmentDetails;
 import com.hms.entities.Appointment;
 import com.hms.enums.AppointmentReasons;
 import com.hms.enums.AppointmentStatus;
@@ -94,5 +95,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<String> getAllAppointmentReasons() {
         return AppointmentReasons.getValues();
+    }
+
+    @Override
+    public List<AppointmentDetails> getAllAppointmentsByPatientId(Long patientId) {
+        return appointmentRepository.getAllDetailsByPatientId(patientId);
     }
 }

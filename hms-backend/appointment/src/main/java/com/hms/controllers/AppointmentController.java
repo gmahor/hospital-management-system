@@ -2,6 +2,7 @@ package com.hms.controllers;
 
 import com.hms.dto.AppointmentReqDto;
 import com.hms.dto.AppointmentRespDto;
+import com.hms.dto.ValueInterface.AppointmentDetails;
 import com.hms.exceptions.AppointmentException;
 import com.hms.services.AppointmentService;
 import com.hms.services.ExternalApiService;
@@ -85,6 +86,17 @@ public class AppointmentController {
         } catch (Exception e) {
             log.error(e.getMessage());
             return responseHandler.response("", "Error while fetching appointment reasons", false, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/getAppointmentsByPatient/{patientId}")
+    public ResponseEntity<Object> getAppointmentsByPatient(@PathVariable(name = "patientId") Long patientId) {
+        try {
+            List<AppointmentDetails> appointments = appointmentService.getAllAppointmentsByPatientId(patientId);
+            return responseHandler.response(appointments, "Data fetched successfully", true, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return responseHandler.response("", "Error while fetching appointments details by patient", false, HttpStatus.BAD_REQUEST);
         }
     }
 
